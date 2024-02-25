@@ -1,87 +1,189 @@
-openapi: 3.0.3
+openapi: 3.0.0
 info:
-  title: Banking API Specification for account operations
-  description: |-
-    A simple banking API that allows two operations:
-    - get account balance given account number
-    - deposit amount to a account
-  version: 1.0-SNAPSHOT
+  title: Real Estate Listing API
+  description: API for listing properties for sale or rent separately
+  version: 1.0.0
 servers:
   - url: http://127.0.0.1:8080/
-tags:
-  - name: accounts
-    description: Operations between bank accounts
-
 paths:
-  /account:
+  /sale/listings:
     get:
-      tags:
-        - accounts
-      summary: Get account information
-      description: Get account information using account number
-      operationId: getAccount
+      summary: Get all sale listings
+      operationId: getSaleListings
       responses:
-        200:
-          description: Success
+        '200':
+          description: A list of sale listings
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Profile'
-        404:
-          description: Account not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Profile'
-  /account/deposit:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ListingsResponse'
+        '404':
+          description: No sale listings found
     post:
-      tags:
-        - accounts
-      summary: Deposit amount to account
-      description: Initiates a deposit operation of a desired amount to the account specified
-      operationId: depositToAccount
+      summary: Create a new real estate listing for sale
+      operationId: createSaleListing
       requestBody:
-        description: Account number and desired amount to deposit
+        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateProfileRequest'
-        required: true
+              $ref: '#/components/schemas/SaleListingRequest'
       responses:
-        204:
-          description: Success
-        404:
-          description: Account not found
+        '201':
+          description: Successfully created sale listing
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AccountNotFoundError'
+                $ref: '#/components/schemas/SaleListingResponse'
+        '400':
+          description: Bad request
+  /rent/listings:
+    get:
+      summary: Get all rent listings
+      operationId: getRentListings
+      responses:
+        '200':
+          description: A list of rent listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ListingsResponse'
+        '404':
+          description: No rent listings found
+    post:
+      summary: Create a new real estate listing for rent
+      operationId: createRentListing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RentListingRequest'
+      responses:
+        '201':
+          description: Successfully created rent listing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RentListingResponse'
+        '400':
+          description: Bad request
 components:
   schemas:
-    Profile:
+    SaleListingRequest:
       type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        password:
-          type: string
-    AccountNotFoundError:
-      type: object
-      properties:
-        message:
-          type: string
-    CreateProfileRequest:
       required:
-        - name
-        - password
-        - mail
+        - address
+        - price
+      properties:
+        address:
+          type: string
+          description: Full address of the property
+        area:
+          type: number
+          format: float
+          description: Area of the property in square meters
+        rooms:
+          type: integer
+          description: Number of rooms
+        price:
+          type: number
+          format: float
+          description: Asking price for the property in USD
+        description:
+          type: string
+          description: Detailed description of the property
+        photos:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: URLs to photos of the property
+    RentListingRequest:
+      type: object
+      required:
+        - address
+        - monthlyRent
+      properties:
+        address:
+          type: string
+          description: Full address of the property
+        area:
+          type: number
+          format: float
+          description: Area of the property in square meters
+        rooms:
+          type: integer
+          description: Number of rooms
+        monthlyRent:
+          type: number
+          format: float
+          description: Monthly rent price in USD
+        description:
+          type: string
+          description: Detailed description of the property
+        photos:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: URLs to photos of the property
+    SaleListingResponse:
       type: object
       properties:
-        name:
+        listingId:
           type: string
-        password:
+          description: Unique identifier for the newly created sale listing
+        status:
           type: string
-        mail:
+          description: Status of the sale listing creation
+    RentListingResponse:
+      type: object
+      properties:
+        listingId:
           type: string
+          description: Unique identifier for the newly created rent listing
+        status:
+          type: string
+          description: Status of the rent listing creation
+    ListingsResponse:
+      type: object
+      properties:
+        listingId:
+          type: string
+          description: Unique identifier for the listing
+        type:
+          type: string
+          enum: [ apartment, house, commercial ]
+          description: The type of property
+        operation:
+          type: string
+          enum: [ sale, rent ]
+          description: Type of operation (sale or rent)
+        address:
+          type: string
+          description: Full address of the property
+        area:
+          type: number
+          format: float
+          description: Area of the property in square meters
+        rooms:
+          type: integer
+          description: Number of rooms
+        price:
+          type: number
+          format: float
+          description: Price of the property in USD for sale or monthly rent for rent
+        description:
+          type: string
+          description: Detailed description of the property
+        photos:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: URLs to photos of the property
