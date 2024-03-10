@@ -29,7 +29,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SaleListingRequest'
+              $ref: '#/components/schemas/ListingRequest'
       responses:
         '201':
           description: Successfully created sale listing
@@ -62,7 +62,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RentListingRequest'
+              $ref: '#/components/schemas/ListingRequest'
       responses:
         '201':
           description: Successfully created rent listing
@@ -74,64 +74,51 @@ paths:
           description: Bad request
 components:
   schemas:
-    SaleListingRequest:
+    ListingRequest:
       type: object
       required:
-        - address
+        - city
+        - street
+        - house
+        - flat
+        - rooms
+        - area
+        - monthlyRent
         - price
+        - description
       properties:
-        address:
+        city:
           type: string
-          description: Full address of the property
+          maxLength: 30
+          example: "Saint Petersburg"
+        street:
+          type: string
+          maxLength: 30
+          example: "Kronverkskiy Prospekt"
+        house:
+          type: integer
+          example: 49
+        building:
+          type: integer
+          example: 1
+        rooms:
+          type: integer
+          example: 44
+          description: Number of rooms
         area:
           type: number
           format: float
+          example: 1200.3
           description: Area of the property in square meters
-        rooms:
-          type: integer
-          description: Number of rooms
         price:
           type: number
           format: float
-          description: Asking price for the property in USD
+          example: 10000
+          description: Monthly rent price in RUB for rent and full price for sale
         description:
           type: string
           description: Detailed description of the property
-        photos:
-          type: array
-          items:
-            type: string
-            format: uri
-          description: URLs to photos of the property
-    RentListingRequest:
-      type: object
-      required:
-        - address
-        - monthlyRent
-      properties:
-        address:
-          type: string
-          description: Full address of the property
-        area:
-          type: number
-          format: float
-          description: Area of the property in square meters
-        rooms:
-          type: integer
-          description: Number of rooms
-        monthlyRent:
-          type: number
-          format: float
-          description: Monthly rent price in USD
-        description:
-          type: string
-          description: Detailed description of the property
-        photos:
-          type: array
-          items:
-            type: string
-            format: uri
-          description: URLs to photos of the property
+          maxLength: 400
     SaleListingResponse:
       type: object
       properties:
