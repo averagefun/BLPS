@@ -6,37 +6,28 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.relational.core.mapping.Table;
+import ru.ifmo.blps.model.enums.ListingStatus;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "saleListings")
+@Table(name = "rentListings")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class RentListing {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class RentListing extends Listing {
 
-    @Column(name = "title", nullable = false)
-    private String title;
+    @Column(name = "minDuration", nullable = false)
+    private Integer minDuration;
 
-    @Column(name = "description", nullable = false)
-    private String description;
+    public RentListing() {
+    }
 
-    @Column(name = "price", nullable = false)
-    private Integer price;
-
-    @Column(name = "createdTime", nullable = false)
-    private LocalDateTime createdTime;
-
-    @Column(name = "address", nullable = false)
-    private String address;
-
-    @Column(name = "priority")
-    private String priority;
+    public RentListing(String description, String city, String street, Integer house, Float area, Integer rooms, Integer price, Integer minDuration) {
+        super(description, city, street, house, area, rooms, price, ListingStatus.CREATED, LocalDateTime.now());
+        this.minDuration = minDuration;
+    }
 }

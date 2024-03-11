@@ -1,14 +1,11 @@
 package ru.ifmo.blps.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.relational.core.mapping.Table;
+import ru.ifmo.blps.model.enums.ListingStatus;
 
 import java.time.LocalDateTime;
 
@@ -17,26 +14,13 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "saleListings")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class SaleListing {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class SaleListing extends Listing{
 
-    @Column(name = "title", nullable = false)
-    private String title;
+    public SaleListing() {
+    }
 
-    @Column(name = "description", nullable = false)
-    private String description;
+    public SaleListing(String description, String city, String street, Integer house, Float area, Integer rooms, Integer price) {
+        super(description, city, street, house, area, rooms, price, ListingStatus.CREATED, LocalDateTime.now());
+    }
 
-    @Column(name = "price", nullable = false)
-    private Integer price;
-
-    @Column(name = "createdTime", nullable = false)
-    private LocalDateTime createdTime;
-
-    @Column(name = "address", nullable = false)
-    private String address;
-
-    @Column(name = "priority")
-    private String priority;
 }
