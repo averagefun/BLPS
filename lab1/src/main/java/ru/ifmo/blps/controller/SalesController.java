@@ -10,12 +10,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.ifmo.blps.model.SaleListing;
+import ru.ifmo.blps.model.enums.SellerType;
 import ru.ifmo.blps.service.ListingsService;
 import ru.ifmo.blps.utils.convertors.SaleListingConvertor;
 import ru.ifmo.blps.worker.ListingStrategy;
 import ru.ifmo.blps.worker.sale.SaleStrategy;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @Slf4j
@@ -45,5 +47,15 @@ public class SalesController {
         SaleListing listing = saleListingConvertor.dto2Model(request);
         saleStrategy.addListing(listing);
         return ResponseEntity.ok(listing);
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<?> verifyRentListing(@RequestBody String verifySaleListingRequest) {
+        log.info("Анекта от " + verifySaleListingRequest);
+        try {
+            return ResponseEntity.ok(saleStrategy.verifyListing(SellerType.fromString(verifySaleListingRequest.substring(1, verifySaleListingRequest.length() - 1))));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().body("Не найдены созданные объявления");
+        }
     }
 }

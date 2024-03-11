@@ -19,15 +19,14 @@ import java.time.LocalDateTime;
 @Table(name = "rentListings")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class RentListing extends Listing {
-
     @Column(name = "minDuration", nullable = false)
     private Integer minDuration;
 
     public RentListing() {
     }
 
-    public RentListing(String description, String city, String street, Integer house, Float area, Integer rooms, Integer price, Integer minDuration) {
-        super(description, city, street, house, area, rooms, price, ListingStatus.CREATED, LocalDateTime.now());
+    public RentListing(String description, Apartment apartment, Integer price, Integer minDuration) {
+        super(description, apartment, price, ListingStatus.CREATED, LocalDateTime.now());
         this.minDuration = minDuration;
     }
 }

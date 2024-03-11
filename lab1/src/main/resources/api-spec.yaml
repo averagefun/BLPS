@@ -33,6 +33,20 @@ paths:
                 $ref: '#/components/schemas/SaleListingsResponse'
         '400':
           description: Bad request
+  /sale/verify:
+    post:
+      summary: Listing about agent or owner
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyListingRequest'
+      responses:
+        '200':
+          description: Successfully update listing
+        '400':
+          description: No created listings
   /rent/listings:
     get:
       summary: Get all rent listings
@@ -61,6 +75,22 @@ paths:
                 $ref: '#/components/schemas/RentListingResponse'
         '400':
           description: Bad request
+
+  /rent/verify:
+    post:
+      summary: Listing about agent or owner
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyListingRequest'
+      responses:
+        '200':
+          description: Successfully update listing
+        '400':
+          description: No created listings
+
   /balance/add:
     post:
       summary: Add money to account
@@ -68,12 +98,7 @@ paths:
       responses:
         '200':
           description: Successfully added money
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/addMoneyRequest'
+
   /balance/:
     get:
       summary: Get Balance
@@ -241,3 +266,9 @@ components:
     addMoneyRequest:
       type: integer
       example: 100
+    VerifyListingRequest:
+      type: string
+      example: "owner"
+      enum:
+        - owner
+        - agent

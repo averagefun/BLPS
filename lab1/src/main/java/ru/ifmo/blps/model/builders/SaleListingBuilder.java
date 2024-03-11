@@ -1,5 +1,6 @@
 package ru.ifmo.blps.model.builders;
 
+import ru.ifmo.blps.model.Apartment;
 import ru.ifmo.blps.model.SaleListing;
 
 import java.time.LocalDateTime;
@@ -14,7 +15,6 @@ public class SaleListingBuilder {
     private Float area;
     private Integer rooms;
     private Integer price;
-
 
     public SaleListingBuilder description(String description) {
         this.description = description;
@@ -56,12 +56,12 @@ public class SaleListingBuilder {
         return this;
     }
 
-
     public SaleListing build() {
-        SaleListing listing = new SaleListing(description, city, street, house, area, rooms, price);
-        listing.setBuilding(building);
-        return listing;
+        Apartment apartment = new Apartment(city, street, house, area, rooms);
+        apartment.setBuilding(building);
+        return new SaleListing(description, apartment, price);
     }
 }
+
 
 

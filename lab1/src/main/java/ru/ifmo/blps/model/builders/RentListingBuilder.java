@@ -1,5 +1,6 @@
 package ru.ifmo.blps.model.builders;
 
+import ru.ifmo.blps.model.Apartment;
 import ru.ifmo.blps.model.RentListing;
 import ru.ifmo.blps.model.SaleListing;
 
@@ -13,7 +14,6 @@ public class RentListingBuilder {
     private Integer rooms;
     private Integer price;
     private Integer minDuration;
-
 
     public RentListingBuilder description(String description) {
         this.description = description;
@@ -54,17 +54,18 @@ public class RentListingBuilder {
         this.price = price;
         return this;
     }
+
     public RentListingBuilder minDuration(Integer minDuration) {
         this.minDuration = minDuration;
         return this;
     }
 
-
     public RentListing build() {
-        RentListing listing = new RentListing(description, city, street, house, area, rooms, price, minDuration);
-        listing.setBuilding(building);
-        return listing;
+        Apartment apartment = new Apartment(city, street, house, area, rooms);
+        apartment.setBuilding(building);
+        return new RentListing(description, apartment, price, minDuration);
     }
 }
+
 
 

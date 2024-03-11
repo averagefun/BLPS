@@ -34,4 +34,5 @@ public class MoneyController {
         log.info("На баланск " + balance + " рубасиков");
         return ResponseEntity.ok(balance);
     }
+
 }

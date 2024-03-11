@@ -1,13 +1,17 @@
 package ru.ifmo.blps.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
 import ru.ifmo.blps.model.enums.ListingStatus;
+import ru.ifmo.blps.model.enums.SellerType;
 
 import java.time.LocalDateTime;
 
@@ -22,23 +26,9 @@ public abstract class Listing {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "city", nullable = false)
-    private String city;
-
-    @Column(name = "street", nullable = false)
-    private String street;
-
-    @Column(name = "house", nullable = false)
-    private Integer house;
-
-    @Column(name = "building")
-    private Integer building;
-
-    @Column(name = "area", nullable = false)
-    private Float area;
-
-    @Column(name = "rooms", nullable = false)
-    private Integer rooms;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "apartment_id", referencedColumnName = "id")
+    private Apartment apartment;
 
     @Column(name = "price", nullable = false)
     private Integer price;
@@ -49,18 +39,16 @@ public abstract class Listing {
     @Column(name = "createdTime", nullable = false)
     private LocalDateTime createdTime;
 
-    public Listing(String description, String city, String street, Integer house, Float area, Integer rooms, Integer price, ListingStatus status, LocalDateTime createdTime) {
+    @Column(name = "sellerType")
+    private SellerType sellerType;
+
+    public Listing(String description, Apartment apartment, Integer price, ListingStatus status, LocalDateTime createdTime) {
         this.description = description;
-        this.city = city;
-        this.street = street;
-        this.house = house;
-        this.area = area;
-        this.rooms = rooms;
+        this.apartment = apartment;
         this.price = price;
         this.status = status;
         this.createdTime = createdTime;
     }
-
 
     public Listing() {
     }
