@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.ifmo.blps.model.RentListing;
 import ru.ifmo.blps.service.ListingsService;
@@ -19,31 +20,31 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequestMapping("/rent")
 public class RentController {
 
-    private ListingStrategy<RentListing> listingStrategy;
+    private final RentStrategy rentStrategy;
 
-    private RentListingConvertor rentListingConvertor;
+    private final RentListingConvertor rentListingConvertor;
 
     @Autowired
-    public RentController(RentListingConvertor rentListingConvertor, ListingsService listingsService) {
+    public RentController(RentListingConvertor rentListingConvertor, RentStrategy rentStrategy) {
         this.rentListingConvertor = rentListingConvertor;
-        this.listingStrategy = new RentStrategy(listingsService);
+        this.rentStrategy = rentStrategy;
     }
 
-    @GetMapping("/rent/listings")
+    @GetMapping("/listings")
     public ResponseEntity<List<RentListing>> getSaleListings() {
-        List<RentListing> saleListings = listingStrategy.getAllListings();
+        List<RentListing> saleListings = rentStrategy.getAllListings();
         log.info("Получено " + saleListings.size() + " объявлений");
         return ResponseEntity.ok(saleListings);
     }
 
-    @PostMapping("/rent/listings")
+    @PostMapping("/listings")
     public ResponseEntity<RentListing> createSaleListing(@RequestBody RentListingRequest request) {
         RentListing listing = rentListingConvertor.dto2Model(request);
-        listingStrategy.addListing(listing);
-        return ResponseEntity.ok(null);
+        rentStrategy.addListing(listing);
+        return ResponseEntity.ok(listing);
     }
-
 
 }

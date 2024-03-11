@@ -61,6 +61,27 @@ paths:
                 $ref: '#/components/schemas/RentListingResponse'
         '400':
           description: Bad request
+  /balance/add:
+    post:
+      summary: Add money to account
+      operationId: addMoney
+      responses:
+        '200':
+          description: Successfully added money
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/addMoneyRequest'
+  /balance/:
+    get:
+      summary: Get Balance
+      operationId: getBalance
+      responses:
+        '200':
+          description: Successfully
+
 components:
   schemas:
     SaleListingRequest:
@@ -216,3 +237,7 @@ components:
           type: string
           description: Detailed description of the property
           maxLength: 400
+
+    addMoneyRequest:
+      type: integer
+      example: 100

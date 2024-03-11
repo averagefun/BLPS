@@ -15,13 +15,12 @@ public class RentListingConvertor {
                 .city(dto.getCity())
                 .street(dto.getCity())
                 .house(dto.getHouse())
-                .building(dto.getBuilding()!=null ? dto.getBuilding() : null)
+                .building(dto.getBuilding())
                 .rooms(dto.getRooms())
                 .area(dto.getArea())
                 .price(dto.getPrice())
                 .minDuration(dto.getMinDuration())
                 .description(dto.getDescription())
                 .build();
-
     }
 }

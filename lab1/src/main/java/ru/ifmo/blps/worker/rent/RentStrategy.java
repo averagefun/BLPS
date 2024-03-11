@@ -1,5 +1,7 @@
 package ru.ifmo.blps.worker.rent;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import ru.ifmo.blps.model.Listing;
 import ru.ifmo.blps.model.RentListing;
 import ru.ifmo.blps.service.ListingsService;
@@ -7,16 +9,18 @@ import ru.ifmo.blps.worker.ListingStrategy;
 
 import java.util.List;
 
+@Component
 public class RentStrategy implements ListingStrategy<RentListing> {
     private final ListingsService listingsService;
 
+    @Autowired
     public RentStrategy(ListingsService listingsService) {
         this.listingsService = listingsService;
     }
 
     @Override
-    public void addListing(Listing listing) {
-        listingsService.saveRentListing((RentListing) listing);
+    public void addListing(RentListing listing) {
+        listingsService.saveRentListing(listing);
     }
 
     @Override
