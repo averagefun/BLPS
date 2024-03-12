@@ -31,7 +31,7 @@ public class MoneyController {
     @GetMapping("/")
     public ResponseEntity<Integer> getMoney() {
         Integer balance = userService.getBalance();
-        log.info("На баланск " + balance + " рубасиков");
+        log.info("На балансе " + balance + " рубасиков");
         return ResponseEntity.ok(balance);
     }
 

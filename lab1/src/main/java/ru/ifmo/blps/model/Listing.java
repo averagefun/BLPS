@@ -11,7 +11,7 @@ import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
 import ru.ifmo.blps.model.enums.ListingStatus;
-import ru.ifmo.blps.model.enums.SellerType;
+import org.openapitools.model.SellerType;
 
 import java.time.LocalDateTime;
 

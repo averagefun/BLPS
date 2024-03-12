@@ -3,6 +3,7 @@ package ru.ifmo.blps.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.model.RentListingRequest;
+import org.openapitools.model.VerifyListingRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +15,7 @@ import ru.ifmo.blps.exceptions.NotEnoughBalanceException;
 import ru.ifmo.blps.model.RentListing;
 import ru.ifmo.blps.model.enums.ConformationType;
 import ru.ifmo.blps.model.enums.ListingStatus;
-import ru.ifmo.blps.model.enums.SellerType;
+import org.openapitools.model.SellerType;
 import ru.ifmo.blps.utils.convertors.RentListingConvertor;
 import ru.ifmo.blps.worker.rent.RentStrategy;
 
@@ -52,10 +53,10 @@ public class RentController {
 
 
     @PostMapping("/verify")
-    public ResponseEntity<?> verifyRentListing(@RequestBody String verifySaleListingRequest) {
+    public ResponseEntity<?> verifyRentListing(@RequestBody VerifyListingRequest verifySaleListingRequest) {
         log.info("Анекта от " + verifySaleListingRequest);
         try {
-            return ResponseEntity.ok(rentStrategy.verifyListing(SellerType.fromString(verifySaleListingRequest)));
+            return ResponseEntity.ok(rentStrategy.verifyListing(verifySaleListingRequest.getSellerType()));
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().body("Не найдены созданные объявления");
         }

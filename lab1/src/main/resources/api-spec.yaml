@@ -301,8 +301,14 @@ components:
       type: integer
       example: 100
     VerifyListingRequest:
+      type: object
+      required:
+        - type
+      properties:
+        sellerType:
+          $ref: '#/components/schemas/SellerType'
+    SellerType:
       type: string
-      example: "owner"
       enum:
         - owner
         - agent

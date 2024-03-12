@@ -6,7 +6,7 @@ import ru.ifmo.blps.exceptions.NotEnoughBalanceException;
 import ru.ifmo.blps.model.RentListing;
 import ru.ifmo.blps.model.enums.ConformationType;
 import ru.ifmo.blps.model.enums.ListingStatus;
-import ru.ifmo.blps.model.enums.SellerType;
+import org.openapitools.model.SellerType;
 import ru.ifmo.blps.service.ListingsService;
 import ru.ifmo.blps.service.UserService;
 import ru.ifmo.blps.worker.ListingStrategy;
@@ -50,7 +50,7 @@ public class RentStrategy implements ListingStrategy<RentListing> {
             rentListing.get().setStatus(ListingStatus.VERIFY);
             rentListing.get().setSellerType(sellerType);
             listingsService.saveRentListing(rentListing.get());
-            return listingsService.countRentListings() < sellerType.getFreeListings() ? FIRST_OWNER_LISTING : LISTING_PRICE;
+            return listingsService.countRentListings() < getFreeListings(sellerType) ? FIRST_OWNER_LISTING : LISTING_PRICE;
         }
         throw new NoSuchElementException();
     }
@@ -66,7 +66,7 @@ public class RentStrategy implements ListingStrategy<RentListing> {
                     listingsService.saveRentListing(rentListing.get());
                 }
                 case CONFIRM -> {
-                    int cost = listingsService.countRentListings() < rentListing.get().getSellerType().getFreeListings() ? FIRST_OWNER_LISTING : LISTING_PRICE;
+                    int cost = listingsService.countRentListings() < getFreeListings(rentListing.get().getSellerType()) ? FIRST_OWNER_LISTING : LISTING_PRICE;
                     if (!userService.checkBalance(cost)) throw new NotEnoughBalanceException();
                     else {
                         userService.payFromBalance(cost);
