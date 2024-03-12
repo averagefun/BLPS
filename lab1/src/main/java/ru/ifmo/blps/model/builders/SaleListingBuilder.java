@@ -3,9 +3,6 @@ package ru.ifmo.blps.model.builders;
 import ru.ifmo.blps.model.Apartment;
 import ru.ifmo.blps.model.SaleListing;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-
 public class SaleListingBuilder {
     private String description;
     private String city;

@@ -47,6 +47,20 @@ paths:
           description: Successfully update listing
         '400':
           description: No created listings
+  /sale/confirm:
+    post:
+      summary: List or decline listing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmListingRequest'
+      responses:
+        '200':
+          description: Successfully update listing
+        '400':
+          description: No created listings
   /rent/listings:
     get:
       summary: Get all rent listings
@@ -90,6 +104,20 @@ paths:
           description: Successfully update listing
         '400':
           description: No created listings
+  /rent/confirm:
+    post:
+      summary: List or decline listing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmListingRequest'
+      responses:
+        '200':
+          description: Successfully update listing
+        '400':
+          description: No created listings
 
   /balance/add:
     post:
@@ -98,6 +126,12 @@ paths:
       responses:
         '200':
           description: Successfully added money
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/addMoneyRequest'
 
   /balance/:
     get:
@@ -272,3 +306,9 @@ components:
       enum:
         - owner
         - agent
+    ConfirmListingRequest:
+      type: string
+      enum:
+        - confirm
+        - back
+        - delete

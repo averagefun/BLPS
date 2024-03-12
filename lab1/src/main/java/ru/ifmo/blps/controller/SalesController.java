@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.ifmo.blps.exceptions.NotEnoughBalanceException;
 import ru.ifmo.blps.model.SaleListing;
+import ru.ifmo.blps.model.enums.ConformationType;
 import ru.ifmo.blps.model.enums.SellerType;
-import ru.ifmo.blps.service.ListingsService;
 import ru.ifmo.blps.utils.convertors.SaleListingConvertor;
-import ru.ifmo.blps.worker.ListingStrategy;
 import ru.ifmo.blps.worker.sale.SaleStrategy;
 
 import java.util.List;
@@ -53,9 +53,21 @@ public class SalesController {
     public ResponseEntity<?> verifyRentListing(@RequestBody String verifySaleListingRequest) {
         log.info("Анекта от " + verifySaleListingRequest);
         try {
-            return ResponseEntity.ok(saleStrategy.verifyListing(SellerType.fromString(verifySaleListingRequest.substring(1, verifySaleListingRequest.length() - 1))));
+            return ResponseEntity.ok(saleStrategy.verifyListing(SellerType.fromString(verifySaleListingRequest)));
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().body("Не найдены созданные объявления");
+        }
+    }
+
+    @PostMapping("/confirm")
+    public ResponseEntity<?> confirmSaleListing(@RequestBody String confirmListingRequest) {
+        log.info("Подтверждение на продажу типа " + confirmListingRequest);
+        try {
+            return ResponseEntity.ok(saleStrategy.confirmListing(ConformationType.fromString(confirmListingRequest)));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().body("Не найдены созданные объявления");
+        } catch (NotEnoughBalanceException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

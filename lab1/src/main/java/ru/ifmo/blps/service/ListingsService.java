@@ -45,6 +45,22 @@ public class ListingsService {
         return rentListingsRepository.findFirstByStatus(ListingStatus.CREATED);
     }
 
+    public Optional<RentListing> getVerifiedRentListing() {
+        return rentListingsRepository.findFirstByStatus(ListingStatus.VERIFY);
+    }
+
+    public void deleteRentListing(RentListing rentListing) {
+        rentListingsRepository.delete(rentListing);
+    }
+
+    public Optional<SaleListing> getVerifiedSaleListing() {
+        return saleListingsRepository.findFirstByStatus(ListingStatus.VERIFY);
+    }
+
+    public void deleteSaleListing(SaleListing saleListing) {
+        saleListingsRepository.delete(saleListing);
+    }
+
     public Integer countRentListings() {
         return rentListingsRepository.findByStatus(ListingStatus.LISTED).size();
     }

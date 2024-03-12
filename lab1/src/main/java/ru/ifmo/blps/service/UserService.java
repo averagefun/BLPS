@@ -28,4 +28,9 @@ public class UserService {
     public int getBalance() {
         return user.getBalance();
     }
+
+    public int payFromBalance(Integer money) {
+        user.setBalance(user.getBalance() - money);
+        return user.getBalance();
+    }
 }

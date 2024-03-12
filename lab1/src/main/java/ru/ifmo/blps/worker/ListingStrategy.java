@@ -1,6 +1,8 @@
 package ru.ifmo.blps.worker;
 
 import ru.ifmo.blps.model.Listing;
+import ru.ifmo.blps.model.enums.ConformationType;
+import ru.ifmo.blps.model.enums.ListingStatus;
 import ru.ifmo.blps.model.enums.SellerType;
 
 import java.util.List;
@@ -11,4 +13,6 @@ public interface ListingStrategy<T extends Listing> {
     List<T> getAllListings();
 
     Integer verifyListing(SellerType sellerType);
+
+    Integer confirmListing(ConformationType listingStatus);
 }

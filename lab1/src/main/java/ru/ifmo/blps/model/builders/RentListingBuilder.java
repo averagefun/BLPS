@@ -2,7 +2,6 @@ package ru.ifmo.blps.model.builders;
 
 import ru.ifmo.blps.model.Apartment;
 import ru.ifmo.blps.model.RentListing;
-import ru.ifmo.blps.model.SaleListing;
 
 public class RentListingBuilder {
     private String description;
