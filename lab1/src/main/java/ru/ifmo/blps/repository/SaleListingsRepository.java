@@ -1,11 +1,14 @@
 package ru.ifmo.blps.repository;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import ru.ifmo.blps.model.Listing;
+import ru.ifmo.blps.model.RentListing;
 import ru.ifmo.blps.model.SaleListing;
 import ru.ifmo.blps.model.enums.ListingStatus;
 
@@ -27,5 +30,6 @@ public interface SaleListingsRepository extends JpaRepository<SaleListing, Long>
     @Query("SELECT r FROM SaleListing r WHERE r.status = :status")
     List<SaleListing> findByStatus(@Param("status") ListingStatus status);
 
+    List<SaleListing> findAll(Specification<Listing> byFilter);
 
 }

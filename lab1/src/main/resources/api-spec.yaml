@@ -6,6 +6,21 @@ info:
 servers:
   - url: http://127.0.0.1:8080/
 paths:
+  /sale/listings/_search:
+    post:
+      summary: Get all sale listings filtered
+      operationId: getSaleListings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Filter'
+      responses:
+        '200':
+          description: A list of sale listings
+        '404':
+          description: No sale listings found
   /sale/listings:
     get:
       summary: Get all sale listings
@@ -61,6 +76,21 @@ paths:
           description: Successfully update listing
         '400':
           description: No created listings
+  /rent/listings/_search:
+    post:
+      summary: Get all rent listings filtered
+      operationId: getRentListings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Filter'
+      responses:
+        '200':
+          description: A list of sale listings
+        '404':
+          description: No sale listings found
   /rent/listings:
     get:
       summary: Get all rent listings
@@ -318,3 +348,28 @@ components:
         - confirm
         - back
         - delete
+    Filter:
+      type: object
+      properties:
+        minPrice:
+          type: integer
+          minimum: 1
+        maxPrice:
+          type: integer
+        minArea:
+          type: number
+          format: float
+          minimum: 1
+        maxArea:
+          type: number
+          format: float
+        rooms:
+          type: array
+          items:
+            type: integer
+            minimum: 1
+            maximum: 5
+        floor:
+          type: integer
+          minimum: 1
+          maximum: 5

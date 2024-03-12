@@ -1,8 +1,10 @@
 package ru.ifmo.blps.worker.sale;
 
+import org.openapitools.model.Filter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.ifmo.blps.exceptions.NotEnoughBalanceException;
+import ru.ifmo.blps.model.RentListing;
 import ru.ifmo.blps.model.SaleListing;
 import ru.ifmo.blps.model.enums.ConformationType;
 import ru.ifmo.blps.model.enums.ListingStatus;
@@ -75,5 +77,10 @@ public class SaleStrategy implements ListingStrategy<SaleListing> {
             }
         } else throw new NoSuchElementException();
         return 0;
+    }
+
+    @Override
+    public List<SaleListing> getAllListingsBuFilter(Filter filter) {
+        return listingsService.getSaleListingsByFilter(filter);
     }
 }

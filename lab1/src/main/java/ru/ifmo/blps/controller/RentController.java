@@ -2,6 +2,7 @@ package ru.ifmo.blps.controller;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.openapitools.model.Filter;
 import org.openapitools.model.RentListingRequest;
 import org.openapitools.model.VerifyListingRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,13 @@ public class RentController {
     @GetMapping("/listings")
     public ResponseEntity<List<RentListing>> getSaleListings() {
         List<RentListing> saleListings = rentStrategy.getAllListings();
+        log.info("Получено " + saleListings.size() + " объявлений");
+        return ResponseEntity.ok(saleListings);
+    }
+
+    @PostMapping("/listings/_search")
+    public ResponseEntity<List<RentListing>> getSaleListings(@RequestBody Filter filter) {
+        List<RentListing> saleListings = rentStrategy.getAllListingsBuFilter(filter);
         log.info("Получено " + saleListings.size() + " объявлений");
         return ResponseEntity.ok(saleListings);
     }

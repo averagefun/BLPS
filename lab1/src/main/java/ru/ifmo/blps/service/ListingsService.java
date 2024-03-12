@@ -1,6 +1,9 @@
 package ru.ifmo.blps.service;
 
+import org.openapitools.model.Filter;
 import org.springframework.stereotype.Service;
+import ru.ifmo.blps.model.Listing;
+import ru.ifmo.blps.model.ListingSpecification;
 import ru.ifmo.blps.model.RentListing;
 import ru.ifmo.blps.model.SaleListing;
 import ru.ifmo.blps.model.enums.ListingStatus;
@@ -41,6 +44,10 @@ public class ListingsService {
         return saleListingsRepository.findByStatus(ListingStatus.LISTED).size();
     }
 
+    public List<SaleListing> getSaleListingsByFilter(Filter filter) {
+        return saleListingsRepository.findAll(ListingSpecification.findByFilter(filter));
+    }
+
     public Optional<RentListing> getCreatedRentListing() {
         return rentListingsRepository.findFirstByStatus(ListingStatus.CREATED);
     }
@@ -77,4 +84,9 @@ public class ListingsService {
     public List<RentListing> getAllRentsListing() {
         return rentListingsRepository.findAll();
     }
+
+    public List<RentListing> getRentListingsByFilter(Filter filter) {
+        return rentListingsRepository.findAll(ListingSpecification.findByFilter(filter));
+    }
+
 }

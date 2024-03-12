@@ -1,5 +1,6 @@
 package ru.ifmo.blps.worker.rent;
 
+import org.openapitools.model.Filter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.ifmo.blps.exceptions.NotEnoughBalanceException;
@@ -41,6 +42,11 @@ public class RentStrategy implements ListingStrategy<RentListing> {
     @Override
     public List<RentListing> getAllListings() {
         return listingsService.getAllRentsListing();
+    }
+
+    @Override
+    public List<RentListing> getAllListingsBuFilter(Filter filter) {
+        return listingsService.getRentListingsByFilter(filter);
     }
 
     @Override

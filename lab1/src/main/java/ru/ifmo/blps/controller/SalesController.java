@@ -1,6 +1,7 @@
 package ru.ifmo.blps.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.openapitools.model.Filter;
 import org.openapitools.model.SaleListingRequest;
 import org.openapitools.model.VerifyListingRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.ifmo.blps.exceptions.NotEnoughBalanceException;
+import ru.ifmo.blps.model.RentListing;
 import ru.ifmo.blps.model.SaleListing;
 import ru.ifmo.blps.model.enums.ConformationType;
 import org.openapitools.model.SellerType;
@@ -48,6 +50,13 @@ public class SalesController {
         SaleListing listing = saleListingConvertor.dto2Model(request);
         saleStrategy.addListing(listing);
         return ResponseEntity.ok(listing);
+    }
+
+    @PostMapping("/listings/_search")
+    public ResponseEntity<List<SaleListing>> getSaleListings(@RequestBody Filter filter) {
+        List<SaleListing> saleListings = saleStrategy.getAllListingsBuFilter(filter);
+        log.info("Получено " + saleListings.size() + " объявлений");
+        return ResponseEntity.ok(saleListings);
     }
 
     @PostMapping("/verify")

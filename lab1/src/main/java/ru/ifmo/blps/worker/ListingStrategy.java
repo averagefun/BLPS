@@ -1,6 +1,8 @@
 package ru.ifmo.blps.worker;
 
+import org.openapitools.model.Filter;
 import ru.ifmo.blps.model.Listing;
+import ru.ifmo.blps.model.RentListing;
 import ru.ifmo.blps.model.enums.ConformationType;
 import ru.ifmo.blps.model.enums.ListingStatus;
 import org.openapitools.model.SellerType;
@@ -15,4 +17,6 @@ public interface ListingStrategy<T extends Listing> extends SellerTypeMapper{
     Integer verifyListing(SellerType sellerType);
 
     Integer confirmListing(ConformationType listingStatus);
+
+    public List<T> getAllListingsBuFilter(Filter filter);
 }
