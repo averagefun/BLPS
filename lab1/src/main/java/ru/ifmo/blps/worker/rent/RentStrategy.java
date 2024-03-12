@@ -21,6 +21,10 @@ public class RentStrategy implements ListingStrategy<RentListing> {
 
     private final UserService userService;
 
+    private final Integer LISTING_PRICE = 100;
+
+    private final Integer FIRST_OWNER_LISTING = 0;
+
     @Autowired
     public RentStrategy(ListingsService listingsService, UserService userService) {
         this.listingsService = listingsService;
@@ -46,7 +50,7 @@ public class RentStrategy implements ListingStrategy<RentListing> {
             rentListing.get().setStatus(ListingStatus.VERIFY);
             rentListing.get().setSellerType(sellerType);
             listingsService.saveRentListing(rentListing.get());
-            return listingsService.countRentListings() < sellerType.getFreeListings() ? 0 : 100;
+            return listingsService.countRentListings() < sellerType.getFreeListings() ? FIRST_OWNER_LISTING : LISTING_PRICE;
         }
         throw new NoSuchElementException();
     }
@@ -62,7 +66,7 @@ public class RentStrategy implements ListingStrategy<RentListing> {
                     listingsService.saveRentListing(rentListing.get());
                 }
                 case CONFIRM -> {
-                    int cost = listingsService.countRentListings() < rentListing.get().getSellerType().getFreeListings() ? 0 : 100;
+                    int cost = listingsService.countRentListings() < rentListing.get().getSellerType().getFreeListings() ? FIRST_OWNER_LISTING : LISTING_PRICE;
                     if (!userService.checkBalance(cost)) throw new NotEnoughBalanceException();
                     else {
                         userService.payFromBalance(cost);
