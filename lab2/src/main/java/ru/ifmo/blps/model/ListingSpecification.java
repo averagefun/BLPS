@@ -1,18 +1,15 @@
 package ru.ifmo.blps.model;
 
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.model.Filter;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.util.ArrayList;
-import java.util.List;
 @Slf4j
-
 public class ListingSpecification {
 
     public static Specification<Listing> findByFilter(Filter filter) {

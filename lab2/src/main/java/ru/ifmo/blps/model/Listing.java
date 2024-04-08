@@ -1,5 +1,7 @@
 package ru.ifmo.blps.model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
@@ -10,10 +12,8 @@ import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.Setter;
-import ru.ifmo.blps.model.enums.ListingStatus;
 import org.openapitools.model.SellerType;
-
-import java.time.LocalDateTime;
+import ru.ifmo.blps.model.enums.ListingStatus;
 
 @Getter
 @Setter

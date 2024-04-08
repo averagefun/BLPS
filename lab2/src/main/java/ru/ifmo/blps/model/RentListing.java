@@ -1,5 +1,7 @@
 package ru.ifmo.blps.model;
 
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -7,8 +9,6 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import ru.ifmo.blps.model.enums.ListingStatus;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter

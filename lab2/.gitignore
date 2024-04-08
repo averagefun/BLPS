@@ -34,5 +34,8 @@ build/
 .vscode/
 
 ### Properties ###
-application.properties
-application-helios.properties
+#application.properties
+#application-helios.properties
+
+### Data files ###
+xml/

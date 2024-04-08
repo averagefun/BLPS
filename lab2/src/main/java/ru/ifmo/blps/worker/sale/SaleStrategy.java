@@ -1,33 +1,30 @@
 package ru.ifmo.blps.worker.sale;
 
-import org.openapitools.model.Filter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import ru.ifmo.blps.exceptions.NotEnoughBalanceException;
-import ru.ifmo.blps.model.RentListing;
-import ru.ifmo.blps.model.SaleListing;
-import ru.ifmo.blps.model.enums.ConformationType;
-import ru.ifmo.blps.model.enums.ListingStatus;
-import org.openapitools.model.SellerType;
-import ru.ifmo.blps.service.ListingsService;
-import ru.ifmo.blps.service.UserService;
-import ru.ifmo.blps.worker.ListingStrategy;
-
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.openapitools.model.Filter;
+import org.openapitools.model.SellerType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import ru.ifmo.blps.model.SaleListing;
+import ru.ifmo.blps.model.User;
+import ru.ifmo.blps.model.enums.ConformationType;
+import ru.ifmo.blps.model.enums.ListingStatus;
+import ru.ifmo.blps.service.ListingsService;
+import ru.ifmo.blps.service.UsersService;
+import ru.ifmo.blps.worker.ListingStrategy;
+
 @Component
 public class SaleStrategy implements ListingStrategy<SaleListing> {
     private final ListingsService listingsService;
-
-    private final UserService userService;
-
+    private final UsersService usersService;
 
     @Autowired
-    public SaleStrategy(ListingsService listingsService, UserService userService) {
+    public SaleStrategy(ListingsService listingsService, UsersService usersService) {
         this.listingsService = listingsService;
-        this.userService = userService;
+        this.usersService = usersService;
     }
 
     @Override
@@ -43,7 +40,7 @@ public class SaleStrategy implements ListingStrategy<SaleListing> {
     }
 
     @Override
-    public Integer verifyListing(SellerType sellerType) {
+    public int verifyListing(SellerType sellerType) {
         Optional<SaleListing> saleListing= listingsService.getCreatedSaleListing();
         if (saleListing.isPresent()){
             saleListing.get().setStatus(ListingStatus.VERIFY);
@@ -55,7 +52,7 @@ public class SaleStrategy implements ListingStrategy<SaleListing> {
     }
 
     @Override
-    public Integer confirmListing(ConformationType listingStatus) {
+    public int confirmListing(ConformationType listingStatus, User user) {
         Optional<SaleListing> saleListing = listingsService.getVerifiedSaleListing();
         if (saleListing.isPresent()) {
             switch (listingStatus) {
@@ -66,16 +63,15 @@ public class SaleStrategy implements ListingStrategy<SaleListing> {
                 }
                 case CONFIRM -> {
                     int cost = listingsService.countSaleListings() < getFreeListings(saleListing.get().getSellerType()) ? 0 : 100;
-                    if (!userService.checkBalance(cost)) throw new NotEnoughBalanceException();
-                    else {
-                        userService.payFromBalance(cost);
-                        saleListing.get().setStatus(ListingStatus.LISTED);
-                        listingsService.saveSaleListing(saleListing.get());
-                        return userService.getBalance();
+                    usersService.pay(user, cost);
+                    saleListing.get().setStatus(ListingStatus.LISTED);
+                    listingsService.saveSaleListing(saleListing.get());
+                    return user.getBalance();
                     }
                 }
-            }
-        } else throw new NoSuchElementException();
+        } else {
+            throw new NoSuchElementException();
+        }
         return 0;
     }
 

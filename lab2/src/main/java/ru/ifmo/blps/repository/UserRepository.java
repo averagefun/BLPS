@@ -1,9 +1,11 @@
 package ru.ifmo.blps.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import java.util.Optional;
+
 import ru.ifmo.blps.model.User;
 
-@Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository {
+    Optional<User> findById(Long id);
+    Optional<User> findByUsername(String username);
+    void save(User user);
 }

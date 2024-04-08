@@ -1,6 +1,9 @@
 package ru.ifmo.blps.controller;
 
 
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.model.Filter;
 import org.openapitools.model.RentListingRequest;
@@ -15,25 +18,23 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.ifmo.blps.exceptions.NotEnoughBalanceException;
 import ru.ifmo.blps.model.RentListing;
 import ru.ifmo.blps.model.enums.ConformationType;
-import ru.ifmo.blps.model.enums.ListingStatus;
-import org.openapitools.model.SellerType;
+import ru.ifmo.blps.service.UsersService;
 import ru.ifmo.blps.utils.convertors.RentListingConvertor;
 import ru.ifmo.blps.worker.rent.RentStrategy;
-
-import java.util.List;
-import java.util.NoSuchElementException;
 
 @Slf4j
 @RestController
 @RequestMapping("/rent")
 public class RentController {
 
+    private final UsersService usersService;
+    private final RentListingConvertor rentListingConvertor;
     private final RentStrategy rentStrategy;
 
-    private final RentListingConvertor rentListingConvertor;
-
     @Autowired
-    public RentController(RentListingConvertor rentListingConvertor, RentStrategy rentStrategy) {
+    public RentController(UsersService usersService, RentListingConvertor rentListingConvertor,
+                          RentStrategy rentStrategy) {
+        this.usersService = usersService;
         this.rentListingConvertor = rentListingConvertor;
         this.rentStrategy = rentStrategy;
     }
@@ -59,7 +60,6 @@ public class RentController {
         return ResponseEntity.ok(listing);
     }
 
-
     @PostMapping("/verify")
     public ResponseEntity<?> verifyRentListing(@RequestBody VerifyListingRequest verifySaleListingRequest) {
         log.info("Анекта от " + verifySaleListingRequest);
@@ -74,7 +74,8 @@ public class RentController {
     public ResponseEntity<?> confirmRentListing(@RequestBody String confirmListingRequest) {
         log.info("Подтверждение на аренду типа " + confirmListingRequest);
         try {
-            return ResponseEntity.ok(rentStrategy.confirmListing(ConformationType.fromString(confirmListingRequest)));
+            return ResponseEntity.ok(rentStrategy.confirmListing(ConformationType.fromString(confirmListingRequest),
+                    usersService.getAuthorizedUser()));
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().body("Не найдены созданные объявления");
         } catch (NotEnoughBalanceException e){

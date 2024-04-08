@@ -1,5 +1,8 @@
 package ru.ifmo.blps.controller;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.model.Filter;
 import org.openapitools.model.SaleListingRequest;
@@ -12,30 +15,27 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.ifmo.blps.exceptions.NotEnoughBalanceException;
-import ru.ifmo.blps.model.RentListing;
 import ru.ifmo.blps.model.SaleListing;
 import ru.ifmo.blps.model.enums.ConformationType;
-import org.openapitools.model.SellerType;
+import ru.ifmo.blps.service.UsersService;
 import ru.ifmo.blps.utils.convertors.SaleListingConvertor;
 import ru.ifmo.blps.worker.sale.SaleStrategy;
-
-import java.util.List;
-import java.util.NoSuchElementException;
 
 
 @Slf4j
 @RestController
 @RequestMapping("/sale")
 public class SalesController {
-
     private final SaleStrategy saleStrategy;
-
+    private final UsersService usersService;
     private final SaleListingConvertor saleListingConvertor;
 
     @Autowired
-    public SalesController(SaleListingConvertor saleListingConvertor, SaleStrategy saleStrategy) {
+    public SalesController(SaleListingConvertor saleListingConvertor, SaleStrategy saleStrategy,
+                           UsersService usersService) {
         this.saleListingConvertor = saleListingConvertor;
         this.saleStrategy = saleStrategy;
+        this.usersService = usersService;
     }
 
     @GetMapping("/listings")
@@ -73,7 +73,8 @@ public class SalesController {
     public ResponseEntity<?> confirmSaleListing(@RequestBody String confirmListingRequest) {
         log.info("Подтверждение на продажу типа " + confirmListingRequest);
         try {
-            return ResponseEntity.ok(saleStrategy.confirmListing(ConformationType.fromString(confirmListingRequest)));
+            return ResponseEntity.ok(saleStrategy.confirmListing(ConformationType.fromString(confirmListingRequest),
+                    usersService.getAuthorizedUser()));
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().body("Не найдены созданные объявления");
         } catch (NotEnoughBalanceException e) {

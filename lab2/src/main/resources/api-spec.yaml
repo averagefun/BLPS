@@ -6,10 +6,30 @@ info:
 servers:
   - url: http://127.0.0.1:8080/
 paths:
+  /auth/login:
+    post:
+      summary: Sign in to account
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+      responses:
+        '200':
+          description: Successfully login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaleListingsResponse'
+        '400':
+          description: Bad request
+
   /sale/listings/search:
     post:
       summary: Get all sale listings filtered
-      operationId: getSaleListings
+      operationId: searchSaleListings
       requestBody:
         required: true
         content:
@@ -79,7 +99,7 @@ paths:
   /rent/listings/search:
     post:
       summary: Get all rent listings filtered
-      operationId: getRentListings
+      operationId: searchRentListings
       requestBody:
         required: true
         content:
@@ -173,6 +193,33 @@ paths:
 
 components:
   schemas:
+    AuthRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          maxLength: 30
+          example: "averagefun"
+        password:
+          type: string
+          maxLength: 30
+          example: "qwerty"
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Access bearer token
+    ErrorResponse:
+      type: object
+      properties:
+        description:
+          type: string
+          description: Error description
+
     SaleListingRequest:
       type: object
       required:

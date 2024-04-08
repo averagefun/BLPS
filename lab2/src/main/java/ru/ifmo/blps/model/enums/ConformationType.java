@@ -5,7 +5,7 @@ public enum ConformationType {
     BACK("back"),
     DELETE("delete");
 
-    private String name;
+    private final String name;
 
     ConformationType(String name) {
         this.name = name;

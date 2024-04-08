@@ -8,31 +8,28 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.ifmo.blps.service.UserService;
+import ru.ifmo.blps.service.UsersService;
 
 @Slf4j
 @RestController
 @RequestMapping("/balance")
 public class MoneyController {
 
-    private final UserService userService;
-
     @Autowired
-    public MoneyController(UserService userService) {
-        this.userService = userService;
+    public MoneyController(UsersService usersService) {
     }
 
     @PostMapping("/add")
-    public void addMoney(@RequestBody Integer money) {
-        userService.addToBalance(money);
+    public void addMoney(@RequestBody int money) {
+        // todo
         log.info("Добавлено " + money + " рубасиков");
     }
 
-    @GetMapping("/")
+    @GetMapping()
     public ResponseEntity<Integer> getMoney() {
-        Integer balance = userService.getBalance();
-        log.info("На балансе " + balance + " рубасиков");
-        return ResponseEntity.ok(balance);
+        // todo
+//        log.info("На балансе " + balance + " рубасиков");
+        return ResponseEntity.ok(0);
     }
 
 }

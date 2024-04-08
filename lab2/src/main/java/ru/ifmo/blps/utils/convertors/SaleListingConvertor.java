@@ -18,6 +18,5 @@ public class SaleListingConvertor {
                 .price(dto.getPrice())
                 .description(dto.getDescription())
                 .build();
-
     }
 }
