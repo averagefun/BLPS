@@ -28,11 +28,21 @@ public class UsersService {
         return findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
+    public void save(User user) {
+        userRepository.save(user);
+    }
+
+    public void addBalance(User user, int money) {
+        user.setBalance(user.getBalance() + money);
+        userRepository.save(user);
+    }
+
     public void pay(User user, int cost) {
         if (user.getBalance() < cost) {
             throw new NotEnoughBalanceException();
         }
 
         user.setBalance(user.getBalance() - cost);
+        userRepository.save(user);
     }
 }

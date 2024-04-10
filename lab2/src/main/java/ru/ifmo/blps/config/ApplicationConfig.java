@@ -49,7 +49,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public PlatformTransactionManager platformTransactionManager(){
+    public PlatformTransactionManager platformTransactionManager() {
         return new JtaTransactionManager();
     }
 }

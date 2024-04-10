@@ -35,7 +35,7 @@ build/
 
 ### Properties ###
 #application.properties
-#application-helios.properties
+application-helios.properties
 
 ### Data files ###
 xml/

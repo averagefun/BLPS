@@ -2,9 +2,9 @@ package ru.ifmo.blps.controller;
 
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import lombok.extern.slf4j.Slf4j;
+import org.openapitools.model.ConfirmListingRequest;
 import org.openapitools.model.Filter;
 import org.openapitools.model.RentListingRequest;
 import org.openapitools.model.VerifyListingRequest;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.ifmo.blps.exceptions.NotEnoughBalanceException;
+import ru.ifmo.blps.exceptions.NoSuchListingsException;
 import ru.ifmo.blps.model.RentListing;
 import ru.ifmo.blps.model.enums.ConformationType;
 import ru.ifmo.blps.service.UsersService;
@@ -40,23 +40,23 @@ public class RentController {
     }
 
     @GetMapping("/listings")
-    public ResponseEntity<List<RentListing>> getSaleListings() {
+    public ResponseEntity<List<RentListing>> getRentListings() {
         List<RentListing> saleListings = rentStrategy.getAllListings();
         log.info("Получено " + saleListings.size() + " объявлений");
         return ResponseEntity.ok(saleListings);
     }
 
     @PostMapping("/listings/search")
-    public ResponseEntity<List<RentListing>> getSaleListings(@RequestBody Filter filter) {
-        List<RentListing> saleListings = rentStrategy.getAllListingsBuFilter(filter);
+    public ResponseEntity<List<RentListing>> getRentListings(@RequestBody Filter filter) {
+        List<RentListing> saleListings = rentStrategy.getAllListingsByFilter(filter);
         log.info("Получено " + saleListings.size() + " объявлений");
         return ResponseEntity.ok(saleListings);
     }
 
     @PostMapping("/listings")
-    public ResponseEntity<RentListing> createSaleListing(@RequestBody RentListingRequest request) {
+    public ResponseEntity<RentListing> createRentListing(@RequestBody RentListingRequest request) {
         RentListing listing = rentListingConvertor.dto2Model(request);
-        rentStrategy.addListing(listing);
+        rentStrategy.addListing(listing, usersService.getAuthorizedUser());
         return ResponseEntity.ok(listing);
     }
 
@@ -64,21 +64,22 @@ public class RentController {
     public ResponseEntity<?> verifyRentListing(@RequestBody VerifyListingRequest verifySaleListingRequest) {
         log.info("Анекта от " + verifySaleListingRequest);
         try {
-            return ResponseEntity.ok(rentStrategy.verifyListing(verifySaleListingRequest.getSellerType()));
-        } catch (NoSuchElementException e) {
+            return ResponseEntity.ok(rentStrategy.verifyListing(verifySaleListingRequest.getSellerType(),
+                    usersService.getAuthorizedUser()));
+        } catch (NoSuchListingsException e) {
             return ResponseEntity.badRequest().body("Не найдены созданные объявления");
         }
     }
 
     @PostMapping("/confirm")
-    public ResponseEntity<?> confirmRentListing(@RequestBody String confirmListingRequest) {
+    public ResponseEntity<?> confirmRentListing(@RequestBody ConfirmListingRequest confirmListingRequest) {
         log.info("Подтверждение на аренду типа " + confirmListingRequest);
         try {
-            return ResponseEntity.ok(rentStrategy.confirmListing(ConformationType.fromString(confirmListingRequest),
+            return ResponseEntity.ok(rentStrategy.confirmListing(ConformationType.fromString(confirmListingRequest.name()),
                     usersService.getAuthorizedUser()));
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchListingsException e) {
             return ResponseEntity.badRequest().body("Не найдены созданные объявления");
-        } catch (NotEnoughBalanceException e){
+        } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

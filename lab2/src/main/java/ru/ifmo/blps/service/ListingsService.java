@@ -1,17 +1,17 @@
 package ru.ifmo.blps.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.openapitools.model.Filter;
 import org.springframework.stereotype.Service;
-import ru.ifmo.blps.model.Listing;
 import ru.ifmo.blps.model.ListingSpecification;
 import ru.ifmo.blps.model.RentListing;
 import ru.ifmo.blps.model.SaleListing;
+import ru.ifmo.blps.model.User;
 import ru.ifmo.blps.model.enums.ListingStatus;
 import ru.ifmo.blps.repository.RentListingsRepository;
 import ru.ifmo.blps.repository.SaleListingsRepository;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ListingsService {
@@ -68,17 +68,16 @@ public class ListingsService {
         saleListingsRepository.delete(saleListing);
     }
 
-    public Integer countRentListings() {
-        return rentListingsRepository.findByStatus(ListingStatus.LISTED).size();
+    public int countRentListings(User user) {
+        return rentListingsRepository.findByStatus(ListingStatus.LISTED, user.getId()).size();
     }
-
 
     public void saveRentListing(RentListing rentListing) {
         rentListingsRepository.save(rentListing);
     }
 
-    public void deleteRentListingIfExist(ListingStatus status) {
-        rentListingsRepository.deleteAllByStatus(status);
+    public void deleteRentListingIfExist(ListingStatus status, User user) {
+        rentListingsRepository.deleteAllByStatus(status, user.getId());
     }
 
     public List<RentListing> getAllRentsListing() {

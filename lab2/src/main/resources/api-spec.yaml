@@ -181,7 +181,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/addMoneyRequest'
+              $ref: '#/components/schemas/AddMoneyRequest'
 
   /balance/:
     get:
@@ -374,9 +374,15 @@ components:
           description: Detailed description of the property
           maxLength: 400
 
-    addMoneyRequest:
-      type: integer
-      example: 100
+    AddMoneyRequest:
+      type: object
+      required:
+        - money
+      properties:
+        money:
+          type: integer
+          example: 100
+
     VerifyListingRequest:
       type: object
       required:

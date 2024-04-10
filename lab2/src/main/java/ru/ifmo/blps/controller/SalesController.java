@@ -1,7 +1,6 @@
 package ru.ifmo.blps.controller;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import lombok.extern.slf4j.Slf4j;
 import org.openapitools.model.Filter;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.ifmo.blps.exceptions.NoSuchListingsException;
 import ru.ifmo.blps.exceptions.NotEnoughBalanceException;
 import ru.ifmo.blps.model.SaleListing;
 import ru.ifmo.blps.model.enums.ConformationType;
@@ -48,13 +48,13 @@ public class SalesController {
     @PostMapping("/listings")
     public ResponseEntity<SaleListing> createSaleListing(@RequestBody SaleListingRequest request) {
         SaleListing listing = saleListingConvertor.dto2Model(request);
-        saleStrategy.addListing(listing);
+        saleStrategy.addListing(listing, usersService.getAuthorizedUser());
         return ResponseEntity.ok(listing);
     }
 
     @PostMapping("/listings/search")
     public ResponseEntity<List<SaleListing>> getSaleListings(@RequestBody Filter filter) {
-        List<SaleListing> saleListings = saleStrategy.getAllListingsBuFilter(filter);
+        List<SaleListing> saleListings = saleStrategy.getAllListingsByFilter(filter);
         log.info("Получено " + saleListings.size() + " объявлений");
         return ResponseEntity.ok(saleListings);
     }
@@ -63,8 +63,9 @@ public class SalesController {
     public ResponseEntity<?> verifyRentListing(@RequestBody VerifyListingRequest verifySaleListingRequest) {
         log.info("Анекта от " + verifySaleListingRequest);
         try {
-            return ResponseEntity.ok(saleStrategy.verifyListing(verifySaleListingRequest.getSellerType()));
-        } catch (NoSuchElementException e) {
+            return ResponseEntity.ok(saleStrategy.verifyListing(verifySaleListingRequest.getSellerType(),
+                    usersService.getAuthorizedUser()));
+        } catch (NoSuchListingsException e) {
             return ResponseEntity.badRequest().body("Не найдены созданные объявления");
         }
     }
@@ -75,7 +76,7 @@ public class SalesController {
         try {
             return ResponseEntity.ok(saleStrategy.confirmListing(ConformationType.fromString(confirmListingRequest),
                     usersService.getAuthorizedUser()));
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchListingsException e) {
             return ResponseEntity.badRequest().body("Не найдены созданные объявления");
         } catch (NotEnoughBalanceException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
