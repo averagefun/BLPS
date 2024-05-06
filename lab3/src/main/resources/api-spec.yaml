@@ -1,0 +1,428 @@
+openapi: 3.0.0
+info:
+  title: Real Estate Listing API
+  description: API for listing properties for sale or rent separately
+  version: 1.0.0
+servers:
+  - url: http://127.0.0.1:8080/
+paths:
+  /auth/login:
+    post:
+      summary: Sign in to account
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+      responses:
+        '200':
+          description: Successfully login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaleListingsResponse'
+        '400':
+          description: Bad request
+
+  /sale/listings/search:
+    post:
+      summary: Get all sale listings filtered
+      operationId: searchSaleListings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Filter'
+      responses:
+        '200':
+          description: A list of sale listings
+        '404':
+          description: No sale listings found
+  /sale/listings:
+    get:
+      summary: Get all sale listings
+      operationId: getSaleListings
+      responses:
+        '200':
+          description: A list of sale listings
+        '404':
+          description: No sale listings found
+    post:
+      summary: Create a new real estate listing for sale
+      operationId: createSaleListing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaleListingRequest'
+      responses:
+        '201':
+          description: Successfully created sale listing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaleListingsResponse'
+        '400':
+          description: Bad request
+  /sale/verify:
+    post:
+      summary: Listing about agent or owner
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyListingRequest'
+      responses:
+        '200':
+          description: Successfully update listing
+        '400':
+          description: No created listings
+  /sale/confirm:
+    post:
+      summary: List or decline listing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmListingRequest'
+      responses:
+        '200':
+          description: Successfully update listing
+        '400':
+          description: No created listings
+  /rent/listings/search:
+    post:
+      summary: Get all rent listings filtered
+      operationId: searchRentListings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Filter'
+      responses:
+        '200':
+          description: A list of sale listings
+        '404':
+          description: No sale listings found
+  /rent/listings:
+    get:
+      summary: Get all rent listings
+      operationId: getRentListings
+      responses:
+        '200':
+          description: A list of rent listings
+
+        '404':
+          description: No rent listings found
+    post:
+      summary: Create a new real estate listing for rent
+      operationId: createRentListing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaleListingRequest'
+      responses:
+        '201':
+          description: Successfully created rent listing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RentListingResponse'
+        '400':
+          description: Bad request
+
+  /rent/verify:
+    post:
+      summary: Listing about agent or owner
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyListingRequest'
+      responses:
+        '200':
+          description: Successfully update listing
+        '400':
+          description: No created listings
+  /rent/confirm:
+    post:
+      summary: List or decline listing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmListingRequest'
+      responses:
+        '200':
+          description: Successfully update listing
+        '400':
+          description: No created listings
+
+  /balance/add:
+    post:
+      summary: Add money to account
+      operationId: addMoney
+      responses:
+        '200':
+          description: Successfully added money
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddMoneyRequest'
+
+  /balance/:
+    get:
+      summary: Get Balance
+      operationId: getBalance
+      responses:
+        '200':
+          description: Successfully
+
+components:
+  schemas:
+    AuthRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          maxLength: 30
+          example: "averagefun"
+        password:
+          type: string
+          maxLength: 30
+          example: "qwerty"
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Access bearer token
+    ErrorResponse:
+      type: object
+      properties:
+        description:
+          type: string
+          description: Error description
+
+    SaleListingRequest:
+      type: object
+      required:
+        - city
+        - street
+        - house
+        - flat
+        - rooms
+        - area
+        - monthlyRent
+        - price
+        - description
+      properties:
+        city:
+          type: string
+          maxLength: 30
+          example: "Saint Petersburg"
+        street:
+          type: string
+          maxLength: 30
+          example: "Kronverkskiy Prospekt"
+        house:
+          type: integer
+          example: 49
+        building:
+          type: integer
+          example: 1
+        rooms:
+          type: integer
+          example: 44
+          description: Number of rooms
+        area:
+          type: number
+          format: float
+          example: 1200.3
+          description: Area of the property in square meters
+        price:
+          type: integer
+          example: 10000
+          description: Monthly rent price in RUB for rent and full price for sale
+        description:
+          type: string
+          description: Detailed description of the property
+          maxLength: 400
+    RentListingResponse:
+      type: object
+      properties:
+        listingId:
+          type: string
+          description: Unique identifier for the newly created rent listing
+        status:
+          type: string
+          description: Status of the rent listing creation
+    SaleListingsResponse:
+      type: object
+      properties:
+        listings:
+          type: array
+          items:
+            type: object
+            required:
+              - listingId
+              - title
+              - type
+              - address
+              - area
+              - rooms
+              - price
+              - status
+            properties:
+              listingId:
+                type: string
+                description: Unique identifier for the listing
+              title:
+                type: string
+                maxLength: 30
+              type:
+                type: string
+                enum: [ apartment, house, commercial ]
+                description: The type of property
+              address:
+                type: string
+                description: Full address of the property
+              area:
+                type: number
+                format: float
+                description: Area of the property in square meters
+              rooms:
+                type: integer
+                description: Number of rooms
+              price:
+                type: integer
+                description: Price of the property in USD for sale or monthly rent for rent
+              description:
+                type: string
+                description: Detailed description of the property
+              status:
+                type: string
+                enum:
+                  - created
+                  - verify
+                  - listed
+
+    RentListingRequest:
+      type: object
+      required:
+        - city
+        - street
+        - house
+        - flat
+        - rooms
+        - area
+        - monthlyRent
+        - price
+        - minDuration
+        - description
+      properties:
+        city:
+          type: string
+          maxLength: 30
+          example: "Saint Petersburg"
+        street:
+          type: string
+          maxLength: 30
+          example: "Kronverkskiy Prospekt"
+        house:
+          type: integer
+          example: 49
+        building:
+          type: integer
+          example: 1
+        rooms:
+          type: integer
+          example: 44
+          description: Number of rooms
+        area:
+          type: number
+          format: float
+          example: 1200.3
+          description: Area of the property in square meters
+        price:
+          type: integer
+          example: 10000
+          description: Monthly rent price in RUB for rent and full price for sale
+        minDuration:
+          type: integer
+          example: 12
+          minimum: 0
+          description: Minimum month to rent
+        description:
+          type: string
+          description: Detailed description of the property
+          maxLength: 400
+
+    AddMoneyRequest:
+      type: object
+      required:
+        - money
+      properties:
+        money:
+          type: integer
+          example: 100
+
+    VerifyListingRequest:
+      type: object
+      required:
+        - type
+      properties:
+        sellerType:
+          $ref: '#/components/schemas/SellerType'
+    SellerType:
+      type: string
+      enum:
+        - owner
+        - agent
+    ConfirmListingRequest:
+      type: string
+      enum:
+        - confirm
+        - back
+        - delete
+    Filter:
+      type: object
+      properties:
+        minPrice:
+          type: integer
+          minimum: 1
+        maxPrice:
+          type: integer
+        minArea:
+          type: number
+          format: float
+          minimum: 1
+        maxArea:
+          type: number
+          format: float
+        rooms:
+          type: array
+          items:
+            type: integer
+            minimum: 1
+            maximum: 5
+        floor:
+          type: integer
+          minimum: 1
+          maximum: 5
