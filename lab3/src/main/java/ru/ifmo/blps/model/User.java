@@ -27,7 +27,7 @@ public class User implements UserDetails {
 
     @Id
     private Long id;
-    private String username;
+    private String email;
     private String password;
     private Role role;
     private int balance;
@@ -35,6 +35,11 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
     }
 
     @Override

@@ -196,17 +196,18 @@ components:
     AuthRequest:
       type: object
       required:
-        - username
+        - email
         - password
       properties:
-        username:
+        email:
           type: string
           maxLength: 30
-          example: "averagefun"
+          example: "averagefun@gmail.com"
         password:
           type: string
           maxLength: 30
           example: "qwerty"
+
     AuthResponse:
       type: object
       properties:
