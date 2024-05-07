@@ -1,10 +1,15 @@
 package ru.ifmo.blps.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.openapitools.model.Filter;
 import org.springframework.stereotype.Service;
+import ru.ifmo.blps.model.Listing;
 import ru.ifmo.blps.model.ListingSpecification;
 import ru.ifmo.blps.model.RentListing;
 import ru.ifmo.blps.model.SaleListing;
@@ -88,4 +93,24 @@ public class ListingsService {
         return rentListingsRepository.findAll(ListingSpecification.findByFilter(filter));
     }
 
+    private List<SaleListing> getSaleListingsByStatusAndToday(ListingStatus status) {
+        LocalDateTime startOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+        LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+
+        return saleListingsRepository.findByStatusAndCreatedTimeBetween(status, startOfDay, endOfDay);
+    }
+
+    public List<RentListing> getRentListingsByStatusAndToday(ListingStatus status) {
+        LocalDateTime startOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+        LocalDateTime endOfDay = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
+
+        return rentListingsRepository.findByStatusAndCreatedTimeBetween(status, startOfDay, endOfDay);
+    }
+
+
+    public List<Listing> findByStatusAndCreatedTime(ListingStatus status) {
+        return Stream.concat(getSaleListingsByStatusAndToday(status).stream(),
+                        getRentListingsByStatusAndToday(status).stream())
+                .toList();
+    }
 }

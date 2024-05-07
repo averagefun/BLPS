@@ -1,5 +1,6 @@
 package ru.ifmo.blps.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.ifmo.blps.model.Listing;
 import ru.ifmo.blps.model.RentListing;
+import ru.ifmo.blps.model.SaleListing;
 import ru.ifmo.blps.model.enums.ListingStatus;
 
 @Repository
@@ -26,4 +28,7 @@ public interface RentListingsRepository extends JpaRepository<RentListing, Long>
     List<RentListing> findByStatus(@Param("status") ListingStatus status, long userId);
 
     List<RentListing> findAll(Specification<Listing> byFilter);
+
+    List<RentListing> findByStatusAndCreatedTimeBetween(ListingStatus status, LocalDateTime startOfDay, LocalDateTime endOfDay);
+
 }

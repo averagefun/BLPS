@@ -1,5 +1,6 @@
 package ru.ifmo.blps.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,4 +27,6 @@ public interface SaleListingsRepository extends JpaRepository<SaleListing, Long>
     List<SaleListing> findByStatus(@Param("status") ListingStatus status);
 
     List<SaleListing> findAll(Specification<Listing> byFilter);
+
+    List<SaleListing> findByStatusAndCreatedTimeBetween(ListingStatus status, LocalDateTime startOfDay, LocalDateTime endOfDay);
 }

@@ -34,4 +34,9 @@ public class UserRepositoryImpl implements UserRepository {
         users.add(user);
         usersXmlService.writeUsersToXml(users);
     }
+
+    @Override
+    public List<User> findAll() {
+        return usersXmlService.readUsersFromXml();
+    }
 }
