@@ -6,8 +6,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @EnableTransactionManagement
-public class BlpsApplication {
+public class MainService {
     public static void main(String[] args) {
-        SpringApplication.run(BlpsApplication.class, args);
+        SpringApplication.run(MainService.class, args);
     }
 }

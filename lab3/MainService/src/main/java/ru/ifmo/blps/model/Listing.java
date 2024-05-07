@@ -46,7 +46,8 @@ public abstract class Listing {
     @Column(name = "sellerType")
     private SellerType sellerType;
 
-    public Listing(String description, Apartment apartment, Integer price, ListingStatus status, LocalDateTime createdTime) {
+    public Listing(String description, Apartment apartment, Integer price, ListingStatus status,
+                   LocalDateTime createdTime) {
         this.description = description;
         this.apartment = apartment;
         this.price = price;
@@ -57,10 +58,9 @@ public abstract class Listing {
     public Listing() {
     }
 
-
-
     public String toString(String author, DateTimeFormatter formatter) {
-        return String.format("Объявление от %s: %s\nАпартаменты: %s\nЦена: %s\nВремя создания объявления: %s\nТип продавца: %s",
+        return String.format("Объявление от %s: %s\nАпартаменты: %s\nЦена: %s\nВремя создания объявления: %s\nТип " +
+                        "продавца: %s",
                 author, description, apartment, price, createdTime.format(formatter), sellerType);
     }
 }

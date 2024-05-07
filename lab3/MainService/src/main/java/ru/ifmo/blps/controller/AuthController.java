@@ -30,7 +30,7 @@ public class AuthController {
             return ResponseEntity.ok(authService.authenticate(request));
         } catch (UsernameNotFoundException ex) {
             return ResponseEntity.badRequest().body(ErrorResponse.builder()
-                    .description("User with username '" + request.getEmail() + "' not found").build());
+                    .description("User with username '" + request.getUsername() + "' not found").build());
         } catch (AuthenticationException ex) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ErrorResponse.builder()
                     .description("Wrong password").build());
@@ -43,7 +43,7 @@ public class AuthController {
             return ResponseEntity.ok(authService.register(request));
         } catch (UserAlreadyExistsException ex) {
             return ResponseEntity.badRequest().body(ErrorResponse.builder()
-                    .description("User with username '" + request.getEmail() + "' already exists").build());
+                    .description("User with username '" + request.getUsername() + "' already exists").build());
         }
     }
 }
