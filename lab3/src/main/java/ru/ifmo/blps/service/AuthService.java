@@ -37,11 +37,11 @@ public class AuthService {
     }
 
     public AuthResponse authenticate(AuthRequest request) {
-        User user = userRepository.findByUsername(request.getUsername())
+        User user = userRepository.findByUsername(request.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 
         String token = jwtService.generateToken(user);
         return AuthResponse.builder()
@@ -50,18 +50,18 @@ public class AuthService {
     }
 
     public AuthResponse register(AuthRequest request) {
-        Optional<User> userO = userRepository.findByUsername(request.getUsername());
+        Optional<User> userO = userRepository.findByUsername(request.getEmail());
         if (userO.isPresent()) {
             throw new UserAlreadyExistsException("User already exists");
         }
 
-        if (validateUsername(request.getUsername())) {
+        if (validateUsername(request.getEmail())) {
             throw new InvalidParameterException("Invalid username");
         }
 
         User user = User.builder()
                 .id(Math.abs(UUID.randomUUID().getLeastSignificantBits()))
-                .username(request.getUsername())
+                .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
                 .build();

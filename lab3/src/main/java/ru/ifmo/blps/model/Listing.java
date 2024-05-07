@@ -1,6 +1,7 @@
 package ru.ifmo.blps.model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -54,5 +55,12 @@ public abstract class Listing {
     }
 
     public Listing() {
+    }
+
+
+
+    public String toString(String author, DateTimeFormatter formatter) {
+        return String.format("Объявление от %s: %s\nАпартаменты: %s\nЦена: %s\nВремя создания объявления: %s\nТип продавца: %s",
+                author, description, apartment, price, createdTime.format(formatter), sellerType);
     }
 }

@@ -24,7 +24,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Optional<User> findByUsername(String username) {
-        return usersXmlService.readUsersFromXml().stream().filter(u -> u.getUsername().equals(username)).findFirst();
+        return usersXmlService.readUsersFromXml().stream().filter(u -> u.getEmail().equals(username)).findFirst();
     }
 
     @Override
@@ -33,5 +33,10 @@ public class UserRepositoryImpl implements UserRepository {
         users.remove(user);
         users.add(user);
         usersXmlService.writeUsersToXml(users);
+    }
+
+    @Override
+    public List<User> findAll() {
+        return usersXmlService.readUsersFromXml();
     }
 }

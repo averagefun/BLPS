@@ -46,4 +46,10 @@ public class Apartment {
         this.area = area;
         this.rooms = rooms;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Квартира расположена в городе %s, по адресу: улица %s, дом %s, строение %s. Площадь квартиры: %s кв. м., количество комнат: %s.",
+                city, street, house, building == null? 1: building, area, rooms);
+    }
 }
