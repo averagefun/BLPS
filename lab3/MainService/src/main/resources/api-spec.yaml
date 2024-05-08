@@ -389,6 +389,9 @@ components:
       required:
         - type
       properties:
+        userId:
+          type: integer
+          format: int64
         sellerType:
           $ref: '#/components/schemas/SellerType'
     SellerType:

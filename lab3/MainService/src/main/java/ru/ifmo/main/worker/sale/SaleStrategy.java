@@ -55,7 +55,7 @@ public class SaleStrategy implements ListingStrategy<SaleListing> {
     }
 
     @Override
-    public Integer verifyListing(SellerType sellerType, User user) throws NoSuchListingsException {
+    public Integer verifyListing(SellerType sellerType, long userId) throws NoSuchListingsException {
         Integer listings = transactionTemplate.execute(status -> {
             Optional<SaleListing> saleListing = listingsService.getCreatedSaleListing();
             if (saleListing.isPresent()) {

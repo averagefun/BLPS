@@ -65,14 +65,14 @@ public class RentStrategy implements ListingStrategy<RentListing> {
     }
 
     @Override
-    public Integer verifyListing(SellerType sellerType, User user) throws NoSuchListingsException {
+    public Integer verifyListing(SellerType sellerType, long userId) throws NoSuchListingsException {
         Integer listings = transactionTemplate.execute(status -> {
-            Optional<RentListing> rentListing = listingsService.getCreatedRentListing();
+            Optional<RentListing> rentListing = listingsService.getCreatedRentListing(userId);
             if (rentListing.isPresent()) {
                 rentListing.get().setStatus(ListingStatus.VERIFY);
                 rentListing.get().setSellerType(sellerType);
                 listingsService.saveRentListing(rentListing.get());
-                return listingsService.countRentListings(user) < getFreeListings(sellerType) ? FIRST_OWNER_LISTING :
+                return listingsService.countRentListings(userId) < getFreeListings(sellerType) ? FIRST_OWNER_LISTING :
                         LISTING_PRICE;
             }
             return 0;
@@ -88,7 +88,7 @@ public class RentStrategy implements ListingStrategy<RentListing> {
     public int confirmListing(ConformationType listingStatus, User user) throws NoSuchListingsException {
         Integer listings = transactionTemplate.execute(status -> {
             try {
-                Optional<RentListing> rentListing = listingsService.getVerifiedRentListing();
+                Optional<RentListing> rentListing = listingsService.getVerifiedRentListing(user.getId());
                 if (rentListing.isPresent()) {
                     switch (listingStatus) {
                         case DELETE -> listingsService.deleteRentListing(rentListing.get());
@@ -98,8 +98,8 @@ public class RentStrategy implements ListingStrategy<RentListing> {
                         }
                         case CONFIRM -> {
                             int cost =
-                                    listingsService.countRentListings(user) < getFreeListings(rentListing.get().getSellerType())
-                                            ? FIRST_OWNER_LISTING : LISTING_PRICE;
+                                    listingsService.countRentListings(user.getId()) < getFreeListings(rentListing.get().getSellerType())
+                                    ? FIRST_OWNER_LISTING : LISTING_PRICE;
                             rentListing.get().setStatus(ListingStatus.LISTED);
                             listingsService.saveRentListing(rentListing.get());
                             log.info("Update listing");

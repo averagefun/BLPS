@@ -8,6 +8,7 @@ import org.openapitools.model.SaleListingRequest;
 import org.openapitools.model.VerifyListingRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.ifmo.main.exceptions.NoSuchListingsException;
 import ru.ifmo.main.exceptions.NotEnoughBalanceException;
 import ru.ifmo.main.model.SaleListing;
+import ru.ifmo.main.model.User;
 import ru.ifmo.main.model.enums.ConformationType;
+import ru.ifmo.main.service.ListingsService;
 import ru.ifmo.main.service.UsersService;
 import ru.ifmo.main.utils.convertors.SaleListingConvertor;
 import ru.ifmo.main.worker.sale.SaleStrategy;
@@ -29,13 +32,15 @@ public class SalesController {
     private final SaleStrategy saleStrategy;
     private final UsersService usersService;
     private final SaleListingConvertor saleListingConvertor;
+    private final ListingsService listingsService;
 
     @Autowired
     public SalesController(SaleListingConvertor saleListingConvertor, SaleStrategy saleStrategy,
-                           UsersService usersService) {
+                           UsersService usersService, ListingsService listingsService) {
         this.saleListingConvertor = saleListingConvertor;
         this.saleStrategy = saleStrategy;
         this.usersService = usersService;
+        this.listingsService = listingsService;
     }
 
     @GetMapping("/listings")
@@ -48,7 +53,9 @@ public class SalesController {
     @PostMapping("/listings")
     public ResponseEntity<SaleListing> createSaleListing(@RequestBody SaleListingRequest request) {
         SaleListing listing = saleListingConvertor.dto2Model(request);
+        User user = usersService.getAuthorizedUser();
         saleStrategy.addListing(listing, usersService.getAuthorizedUser());
+        listingsService.sendListingToVerification(listing, user);
         return ResponseEntity.ok(listing);
     }
 
@@ -59,12 +66,13 @@ public class SalesController {
         return ResponseEntity.ok(saleListings);
     }
 
+    @Secured("ADMIN")
     @PostMapping("/verify")
     public ResponseEntity<?> verifyRentListing(@RequestBody VerifyListingRequest verifySaleListingRequest) {
         log.info("Анекта от " + verifySaleListingRequest);
         try {
             return ResponseEntity.ok(saleStrategy.verifyListing(verifySaleListingRequest.getSellerType(),
-                    usersService.getAuthorizedUser()));
+                    usersService.getAuthorizedUser().getId()));
         } catch (NoSuchListingsException e) {
             return ResponseEntity.badRequest().body("Не найдены созданные объявления");
         }

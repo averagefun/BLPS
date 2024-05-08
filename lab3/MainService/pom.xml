@@ -9,11 +9,11 @@
         <relativePath/>
     </parent>
     <groupId>ru.ifmo</groupId>
-    <artifactId>blps</artifactId>
+    <artifactId>MainService</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>blps</name>
-    <description>blps</description>
+    <name>MainService</name>
+    <description>MainService</description>
     <properties>
         <java.version>17</java.version>
     </properties>
@@ -74,14 +74,12 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
-            <version>2.8.0</version>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-kafka</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
-            <version>2.8.0</version>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.zookeeper</groupId>

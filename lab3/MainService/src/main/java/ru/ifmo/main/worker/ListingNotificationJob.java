@@ -19,7 +19,7 @@ public class ListingNotificationJob implements Job {
 
     private final ListingsService listingsService;
 
-    private final EmailService emailService; // Предполагается, что у вас есть сервис для отправки email
+    private final EmailService emailService;
 
     @Autowired
     public ListingNotificationJob(ListingsService listingsService, EmailService emailService) {
@@ -31,8 +31,9 @@ public class ListingNotificationJob implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         List<Listing> listings = listingsService.findByStatusAndCreatedTime(ListingStatus.LISTED);
-        log.info("sending {} mails", listings.size());
-        emailService.sendEmailToAllUsers("New Listing Available", listings); // Пример метода
-
+        if (!listings.isEmpty()) {
+            log.info("sending {} emails", listings.size());
+            emailService.sendEmailToAllUsers("New Listing Available", listings);
+        }
     }
 }

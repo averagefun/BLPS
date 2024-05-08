@@ -2,7 +2,6 @@ package ru.ifmo.main.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,13 +20,12 @@ public interface RentListingsRepository extends JpaRepository<RentListing, Long>
     @Query("DELETE FROM RentListing r WHERE r.status = :status AND r.authorId = :userId")
     void deleteAllByStatus(ListingStatus status, long userId);
 
-    Optional<RentListing> findFirstByStatus(ListingStatus status);
-
     @Query("SELECT r FROM RentListing r WHERE r.status = :status AND r.authorId = :userId")
     List<RentListing> findByStatus(@Param("status") ListingStatus status, long userId);
 
     List<RentListing> findAll(Specification<Listing> byFilter);
 
-    List<RentListing> findByStatusAndCreatedTimeBetween(ListingStatus status, LocalDateTime startOfDay, LocalDateTime endOfDay);
+    List<RentListing> findByStatusAndCreatedTimeBetween(ListingStatus status, LocalDateTime startOfDay,
+                                                        LocalDateTime endOfDay);
 
 }

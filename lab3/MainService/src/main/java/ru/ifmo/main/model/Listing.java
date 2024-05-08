@@ -58,9 +58,9 @@ public abstract class Listing {
     public Listing() {
     }
 
-    public String toString(String author, DateTimeFormatter formatter) {
-        return String.format("Объявление от %s: %s\nАпартаменты: %s\nЦена: %s\nВремя создания объявления: %s\nТип " +
-                        "продавца: %s",
-                author, description, apartment, price, createdTime.format(formatter), sellerType);
+    public String toString(User author) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return String.format("Объявление от %s: %s\nАпартаменты: %s\nЦена: %s\nВремя создания объявления: %s",
+                author.getUsername(), description, apartment, price, createdTime.format(formatter));
     }
 }

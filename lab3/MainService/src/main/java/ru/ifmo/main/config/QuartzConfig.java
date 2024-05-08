@@ -28,10 +28,10 @@ public class QuartzConfig {
         return TriggerBuilder.newTrigger()
                 .forJob(jobDetail)
                 .withIdentity("listingNotificationTrigger")
-//                .withSchedule(dailyAtHourAndMinute(9, 0)) // Запуск каждый день в 9 утра
+//                .withSchedule(dailyAtHourAndMinute(9, 0))
                 .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-                        .withIntervalInMinutes(1)  // задаём интервал в одну минуту
-                        .repeatForever())  // задача будет повторяться бесконечно
+                        .withIntervalInMinutes(1)
+                        .repeatForever())
                 .build();
     }
 }

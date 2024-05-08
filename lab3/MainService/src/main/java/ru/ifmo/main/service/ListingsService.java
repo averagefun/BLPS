@@ -7,8 +7,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.openapitools.model.Filter;
 import org.springframework.stereotype.Service;
+import ru.ifmo.main.dto.ListingVerificationMessage;
 import ru.ifmo.main.model.Listing;
 import ru.ifmo.main.model.ListingSpecification;
 import ru.ifmo.main.model.RentListing;
@@ -19,14 +23,21 @@ import ru.ifmo.main.repository.RentListingsRepository;
 import ru.ifmo.main.repository.SaleListingsRepository;
 
 @Service
+@Slf4j
 public class ListingsService {
     private final SaleListingsRepository saleListingsRepository;
     private final RentListingsRepository rentListingsRepository;
+    private final KafkaProducerService kafkaProducerService;
+    private final ObjectMapper objectMapper;
 
-
-    public ListingsService(SaleListingsRepository saleListingsRepository, RentListingsRepository rentListingsRepository) {
+    public ListingsService(SaleListingsRepository saleListingsRepository,
+                           RentListingsRepository rentListingsRepository,
+                           KafkaProducerService kafkaProducerService,
+                           ObjectMapper objectMapper) {
         this.saleListingsRepository = saleListingsRepository;
         this.rentListingsRepository = rentListingsRepository;
+        this.kafkaProducerService = kafkaProducerService;
+        this.objectMapper = objectMapper;
     }
 
     public void saveSaleListing(SaleListing saleListing) {
@@ -53,12 +64,12 @@ public class ListingsService {
         return saleListingsRepository.findAll(ListingSpecification.findByFilter(filter));
     }
 
-    public Optional<RentListing> getCreatedRentListing() {
-        return rentListingsRepository.findFirstByStatus(ListingStatus.CREATED);
+    public Optional<RentListing> getCreatedRentListing(long userId) {
+        return rentListingsRepository.findByStatus(ListingStatus.CREATED, userId).stream().findFirst();
     }
 
-    public Optional<RentListing> getVerifiedRentListing() {
-        return rentListingsRepository.findFirstByStatus(ListingStatus.VERIFY);
+    public Optional<RentListing> getVerifiedRentListing(long userId) {
+        return rentListingsRepository.findByStatus(ListingStatus.VERIFY, userId).stream().findFirst();
     }
 
     public void deleteRentListing(RentListing rentListing) {
@@ -73,8 +84,8 @@ public class ListingsService {
         saleListingsRepository.delete(saleListing);
     }
 
-    public int countRentListings(User user) {
-        return rentListingsRepository.findByStatus(ListingStatus.LISTED, user.getId()).size();
+    public int countRentListings(long userId) {
+        return rentListingsRepository.findByStatus(ListingStatus.LISTED, userId).size();
     }
 
     public void saveRentListing(RentListing rentListing) {
@@ -112,5 +123,17 @@ public class ListingsService {
         return Stream.concat(getSaleListingsByStatusAndToday(status).stream(),
                         getRentListingsByStatusAndToday(status).stream())
                 .toList();
+    }
+
+    public void sendListingToVerification(Listing listing, User user) {
+        try {
+            ListingVerificationMessage listingVerificationMessage = new ListingVerificationMessage(listing);
+            String message = objectMapper.writeValueAsString(listingVerificationMessage);
+            log.info("Sending message to ListingsVerification {}", message);
+            kafkaProducerService.sendMessage("ListingsVerification",
+                    listingVerificationMessage.listing().toString(user));
+        } catch (JsonProcessingException e) {
+            log.error("Failed to serialize message");
+        }
     }
 }

@@ -14,7 +14,7 @@ public interface ListingStrategy<T extends Listing> extends SellerTypeMapper{
 
     List<T> getAllListings();
 
-    Integer verifyListing(SellerType sellerType, User user) throws NoSuchListingsException;
+    Integer verifyListing(SellerType sellerType, long userId) throws NoSuchListingsException;
 
     int confirmListing(ConformationType listingStatus, User user) throws NoSuchListingsException;
 

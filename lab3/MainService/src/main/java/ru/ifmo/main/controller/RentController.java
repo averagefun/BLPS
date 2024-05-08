@@ -10,6 +10,7 @@ import org.openapitools.model.RentListingRequest;
 import org.openapitools.model.VerifyListingRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.ifmo.main.exceptions.NoSuchListingsException;
 import ru.ifmo.main.model.RentListing;
+import ru.ifmo.main.model.User;
 import ru.ifmo.main.model.enums.ConformationType;
+import ru.ifmo.main.service.ListingsService;
 import ru.ifmo.main.service.UsersService;
 import ru.ifmo.main.utils.convertors.RentListingConvertor;
 import ru.ifmo.main.worker.rent.RentStrategy;
@@ -30,13 +33,15 @@ public class RentController {
     private final UsersService usersService;
     private final RentListingConvertor rentListingConvertor;
     private final RentStrategy rentStrategy;
+    private final ListingsService listingsService;
 
     @Autowired
     public RentController(UsersService usersService, RentListingConvertor rentListingConvertor,
-                          RentStrategy rentStrategy) {
+                          RentStrategy rentStrategy, ListingsService listingsService) {
         this.usersService = usersService;
         this.rentListingConvertor = rentListingConvertor;
         this.rentStrategy = rentStrategy;
+        this.listingsService = listingsService;
     }
 
     @GetMapping("/listings")
@@ -56,16 +61,19 @@ public class RentController {
     @PostMapping("/listings")
     public ResponseEntity<RentListing> createRentListing(@RequestBody RentListingRequest request) {
         RentListing listing = rentListingConvertor.dto2Model(request);
-        rentStrategy.addListing(listing, usersService.getAuthorizedUser());
+        User user = usersService.getAuthorizedUser();
+        rentStrategy.addListing(listing, user);
+        listingsService.sendListingToVerification(listing, user);
         return ResponseEntity.ok(listing);
     }
 
+    @Secured("ADMIN")
     @PostMapping("/verify")
     public ResponseEntity<?> verifyRentListing(@RequestBody VerifyListingRequest verifySaleListingRequest) {
         log.info("Анекта от " + verifySaleListingRequest);
         try {
             return ResponseEntity.ok(rentStrategy.verifyListing(verifySaleListingRequest.getSellerType(),
-                    usersService.getAuthorizedUser()));
+                    verifySaleListingRequest.getUserId()));
         } catch (NoSuchListingsException e) {
             return ResponseEntity.badRequest().body("Не найдены созданные объявления");
         }
