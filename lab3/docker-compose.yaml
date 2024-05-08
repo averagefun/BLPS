@@ -1,34 +1,37 @@
-version: "3.9"
-
+version: "3"
 services:
-  kafka:
-    image: obsidiandynamics/kafka # support 2.3.0
-    restart: "no"
-    ports:
-      - "9092:9092"
-      - "9093:9093"
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    networks:
+      - broker-kafka
     environment:
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
-      KAFKA_BROKER_ID: 52
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER_INTERNAL
-      KAFKA_LISTENERS: DOCKER_EXTERNAL://kafka:9092,OTHER_HOST://0.0.0.0:9093,DOCKER_INTERNAL://kafka:29092
-      KAFKA_ADVERTISED_LISTENERS: DOCKER_EXTERNAL://localhost:9092,DOCKER_INTERNAL://kafka:29092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: DOCKER_EXTERNAL:PLAINTEXT,OTHER_HOST:PLAINTEXT,DOCKER_INTERNAL:PLAINTEXT
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    networks:
+      - broker-kafka
     depends_on:
       - zookeeper
-    networks:
-      - kafka-network
-  
-  zookeeper:
-    image: zookeeper:3.7.2
-    restart: "no"
-    networks:
-      - kafka-network
     ports:
-      - "2181:2181"
-
+      - 9092:9092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+  kafdrop:
+    image: obsidiandynamics/kafdrop:latest
+    networks:
+      - broker-kafka
+    depends_on:
+      - kafka
+    ports:
+      - 19000:9000
+    environment:
+      KAFKA_BROKERCONNECT: kafka:29092
 networks:
-  kafka-network:
-    name: kafka-network
+  broker-kafka:
     driver: bridge
