@@ -1,0 +1,46 @@
+### login
+POST localhost:8080/auth/register
+Content-Type: application/json
+
+{
+  "username": "expollete@gmail.com",
+  "password": "qwerty"
+}
+
+### getRentListings
+GET localhost:8080/rent/listings
+
+### createRentListing
+POST localhost:8080/rent/listings
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJleHBvbGxldGVAZ21haWwuY29tIiwiaWF0IjoxNzE1MTI5NzE1LCJleHAiOjE3MTUyMTYxMTV9.MnqYBAGmgd3XUFv6NmVy2DLNg_yfkpBQyBPxuO3fr9g
+Content-Type: application/json
+
+{
+  "city": "Saint-Petersburg",
+  "street": "Kronverkskiy Prospekt",
+  "house": 49,
+  "building": 1,
+  "rooms": 44,
+  "area": 1200.3,
+  "price": 10000,
+  "minDuration": 12,
+  "description": "уютная квартира с трупом"
+}
+
+### verifyListing
+POST localhost:8080/rent/verify
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJleHBvbGxldGVAZ21haWwuY29tIiwiaWF0IjoxNzE1MTI5NzE1LCJleHAiOjE3MTUyMTYxMTV9.MnqYBAGmgd3XUFv6NmVy2DLNg_yfkpBQyBPxuO3fr9g
+Content-Type: application/json
+
+{
+  "userId": 9170498839376499017,
+  "sellerType": "owner"
+}
+
+
+### confirmListing
+POST localhost:8080/rent/confirm
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJleHBvbGxldGVAZ21haWwuY29tIiwiaWF0IjoxNzE1MTI5NzE1LCJleHAiOjE3MTUyMTYxMTV9.MnqYBAGmgd3XUFv6NmVy2DLNg_yfkpBQyBPxuO3fr9g
+Content-Type: application/json
+
+"confirm"

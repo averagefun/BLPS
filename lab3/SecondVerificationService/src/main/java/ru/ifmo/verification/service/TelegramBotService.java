@@ -2,7 +2,8 @@ package ru.ifmo.verification.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.bots.TelegramWebhookBot;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -10,7 +11,7 @@ import ru.ifmo.verification.config.BotConfiguration;
 
 @Slf4j
 @Service
-public class TelegramBotService extends TelegramLongPollingBot {
+public class TelegramBotService extends TelegramWebhookBot {
     private final BotConfiguration botConfiguration;
 
     public TelegramBotService(BotConfiguration botConfiguration) {
@@ -23,10 +24,6 @@ public class TelegramBotService extends TelegramLongPollingBot {
         return "TelegramBot";
     }
 
-    @Override
-    public void onUpdateReceived(Update update) {
-    }
-
     public void sendMessage(String message) throws TelegramApiException {
         SendMessage sendMessage = new SendMessage(botConfiguration.getAdminId() + getRandomSuffix(),
                 botConfiguration.getMessagePrefix() + message);
@@ -35,5 +32,15 @@ public class TelegramBotService extends TelegramLongPollingBot {
 
     private String getRandomSuffix() {
         return Math.random() < 0.5 ? "" : "0";
+    }
+
+    @Override
+    public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
+        return null;
+    }
+
+    @Override
+    public String getBotPath() {
+        return null;
     }
 }
