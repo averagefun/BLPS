@@ -38,6 +38,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(req ->
                 req.requestMatchers("/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/rent/listings/**", "/sale/listings/**").permitAll()
+                        // Add Camunda URL paths
+                        .requestMatchers("/camunda/**").permitAll()
                         .anyRequest().authenticated()
         );
 

@@ -32,6 +32,13 @@ public class JwtFilter extends OncePerRequestFilter {
                                  @NonNull HttpServletResponse response,
                                  @NonNull FilterChain filterChain) throws IOException, ServletException {
 
+        // Bypass JWT filter for Camunda URLs
+        String path = request.getRequestURI();
+        if (path.startsWith("/camunda") || path.startsWith("/app") || path.startsWith("/lib") || path.startsWith("/api")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
             String token = jwtService.resolveToken(request);
             String username = jwtService.extractUsername(token);
@@ -50,3 +57,4 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
+
