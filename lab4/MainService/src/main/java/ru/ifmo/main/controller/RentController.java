@@ -44,7 +44,7 @@ public class RentController {
         this.listingsService = listingsService;
     }
 
-    @GetMapping("/listings")
+        @GetMapping("/listings")
     public ResponseEntity<List<RentListing>> getRentListings() {
         List<RentListing> saleListings = rentStrategy.getAllListings();
         log.info("Получено " + saleListings.size() + " объявлений");

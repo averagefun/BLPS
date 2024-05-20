@@ -1,5 +1,6 @@
 package ru.ifmo.main.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -19,7 +20,7 @@ import ru.ifmo.main.model.enums.ListingStatus;
 @Getter
 @Setter
 @MappedSuperclass
-public abstract class Listing {
+public abstract class Listing implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
