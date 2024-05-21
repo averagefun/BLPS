@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.openapitools.model.SellerType;
@@ -20,6 +21,7 @@ import ru.ifmo.main.model.enums.ListingStatus;
 @Getter
 @Setter
 @MappedSuperclass
+@AllArgsConstructor
 public abstract class Listing implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

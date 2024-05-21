@@ -9,6 +9,16 @@
                   targetNamespace="http://bpmn.io/schema/bpmn">
     <bpmn:process id="Process_verifyRentListing" isExecutable="true" camunda:historyTimeToLive="180">
         <bpmn:startEvent id="StartEvent_1" name="Start Verification">
+            <bpmn:extensionElements>
+                <camunda:formData>
+                    <camunda:formField id="userId" label="User ID" type="long" />
+                    <camunda:formField id="token" label="Token" type="string" />
+                    <camunda:formField id="sellerType" label="Seller Type" type="enum">
+                        <camunda:value id="OWNER" name="OWNER" />
+                        <camunda:value id="AGENT" name="AGENT" />
+                    </camunda:formField>
+                </camunda:formData>
+            </bpmn:extensionElements>
             <bpmn:outgoing>SequenceFlow_1</bpmn:outgoing>
         </bpmn:startEvent>
 
@@ -80,7 +90,7 @@
             <bpmn:extensionElements>
                 <camunda:formData>
                     <camunda:formField id="resultMessage" label="Result Message" type="string" />
-                    <camunda:formField id="listingPrice" label="listing Price" type="string" />
+                    <camunda:formField id="listingPrice" label="Listing Price" type="string" />
                 </camunda:formData>
             </bpmn:extensionElements>
             <bpmn:incoming>SequenceFlow_5</bpmn:incoming>

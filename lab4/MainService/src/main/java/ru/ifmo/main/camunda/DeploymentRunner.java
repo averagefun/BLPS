@@ -21,7 +21,7 @@ public class DeploymentRunner implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         camundaDeploymentService.deleteAllDeployments();
-        camundaDeploymentService.deployProcessDefinition(List.of("auth-process.bpmn", "register-process.bpmn", "verify-precess.bpmn"));
+        camundaDeploymentService.deployProcessDefinition(List.of("auth-process.bpmn", "register-process.bpmn", "verify-precess.bpmn", "create-rent-process.bpmn"));
 
     }
 }
