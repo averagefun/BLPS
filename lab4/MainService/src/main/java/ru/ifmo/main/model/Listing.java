@@ -66,4 +66,10 @@ public abstract class Listing implements Serializable {
         return String.format("Объявление от %s: %s\nАпартаменты: %s\nЦена: %s\nВремя создания объявления: %s",
                 author.getUsername(), description, apartment, price, createdTime.format(formatter));
     }
+    @Override
+    public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return String.format("%s\nАпартаменты: %s\nЦена: %s\nВремя создания объявления: %s",
+                description, apartment, price, createdTime.format(formatter));
+    }
 }
