@@ -7,7 +7,7 @@
                   xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
                   id="Definitions_1"
                   targetNamespace="http://bpmn.io/schema/bpmn">
-    <bpmn:process id="addBalanceProcess" isExecutable="true" camunda:historyTimeToLive="180">
+    <bpmn:process id="Add_money" isExecutable="true" name="Add Money" camunda:historyTimeToLive="180">
         <bpmn:startEvent id="StartEvent_1" name="Start">
             <bpmn:extensionElements>
                 <camunda:formData>
@@ -21,7 +21,7 @@
 
         <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Task_AuthenticateUser"/>
 
-        <bpmn:serviceTask id="Task_AuthenticateUser" name="Authenticate User" camunda:class="ru.ifmo.main.camunda.AuthenticateUserDelegate">
+        <bpmn:serviceTask id="Task_AuthenticateUser" name="Authenticate User" camunda:class="ru.ifmo.main.camunda.users.AuthenticateUserDelegate">
             <bpmn:incoming>Flow_1</bpmn:incoming>
             <bpmn:outgoing>Flow_2</bpmn:outgoing>
         </bpmn:serviceTask>

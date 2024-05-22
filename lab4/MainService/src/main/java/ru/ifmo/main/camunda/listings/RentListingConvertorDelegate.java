@@ -1,4 +1,4 @@
-package ru.ifmo.main.camunda;
+package ru.ifmo.main.camunda.listings;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import org.camunda.bpm.engine.delegate.DelegateExecution;

@@ -1,0 +1,13 @@
+{
+  "city": "Saint Petersburg",
+  "street": "Kronverkskiy Prospekt",
+  "house": 49,
+  "building": 1,
+  "rooms": 44,
+  "area": 1200.3,
+  "price": 1000000,
+  "minDuration": 12,
+  "description": "Test труп"
+}
+
+

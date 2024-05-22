@@ -6,7 +6,7 @@
                   xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
                   id="Definitions_1"
                   targetNamespace="http://bpmn.io/schema/bpmn">
-    <bpmn:process id="create_rent_listing" name="Create Rent Listing Process" isExecutable="true" camunda:historyTimeToLive="180">
+    <bpmn:process id="create_sale_listing" name="Create Sale Listing Process" isExecutable="true" camunda:historyTimeToLive="180">
         <bpmn:startEvent id="StartEvent_1" name="Start">
             <bpmn:extensionElements>
                 <camunda:formData>

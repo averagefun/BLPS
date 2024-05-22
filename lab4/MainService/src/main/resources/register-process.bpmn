@@ -7,7 +7,7 @@
                   xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
                   id="Definitions_2"
                   targetNamespace="http://bpmn.io/schema/bpmn">
-  <bpmn:process id="Process_Registration" isExecutable="true" camunda:historyTimeToLive="180">
+  <bpmn:process id="Registration" isExecutable="true" camunda:historyTimeToLive="180">
     <bpmn:startEvent id="StartEvent_1" name="Start">
       <bpmn:extensionElements>
         <camunda:formData>
@@ -20,7 +20,7 @@
 
     <bpmn:sequenceFlow id="SequenceFlow_1" sourceRef="StartEvent_1" targetRef="ServiceTask_CheckUserExistence"/>
 
-    <bpmn:serviceTask id="ServiceTask_CheckUserExistence" name="Check User Existence" camunda:class="ru.ifmo.main.camunda.CheckUserExistenceDelegate">
+    <bpmn:serviceTask id="ServiceTask_CheckUserExistence" name="Check User Existence" camunda:class="ru.ifmo.main.camunda.users.CheckUserExistenceDelegate">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="username">${execution.getVariable("username")}</camunda:inputParameter>
@@ -39,7 +39,7 @@
 
     <bpmn:sequenceFlow id="SequenceFlow_3" sourceRef="UserTask_1" targetRef="ServiceTask_ValidateUsername"/>
 
-    <bpmn:serviceTask id="ServiceTask_ValidateUsername" name="Validate Username" camunda:class="ru.ifmo.main.camunda.ValidateUsernameDelegate">
+    <bpmn:serviceTask id="ServiceTask_ValidateUsername" name="Validate Username" camunda:class="ru.ifmo.main.camunda.users.ValidateUsernameDelegate">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="username">${execution.getVariable("username")}</camunda:inputParameter>
@@ -69,7 +69,7 @@
       <bpmn:incoming>SequenceFlow_6</bpmn:incoming>
     </bpmn:endEvent>
 
-    <bpmn:serviceTask id="ServiceTask_RegisterUser" name="Register User" camunda:class="ru.ifmo.main.camunda.RegisterUserDelegate">
+    <bpmn:serviceTask id="ServiceTask_RegisterUser" name="Register User" camunda:class="ru.ifmo.main.camunda.users.RegisterUserDelegate">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="username">${execution.getVariable("username")}</camunda:inputParameter>
@@ -82,7 +82,7 @@
 
     <bpmn:sequenceFlow id="SequenceFlow_7" sourceRef="ServiceTask_RegisterUser" targetRef="ServiceTask_GenerateToken"/>
 
-    <bpmn:serviceTask id="ServiceTask_GenerateToken" name="Generate Token" camunda:class="ru.ifmo.main.camunda.GenerateTokenDelegate">
+    <bpmn:serviceTask id="ServiceTask_GenerateToken" name="Generate Token" camunda:class="ru.ifmo.main.camunda.users.GenerateTokenDelegate">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="username">${execution.getVariable("username")}</camunda:inputParameter>

@@ -1,13 +1,11 @@
-package ru.ifmo.main.camunda;
+package ru.ifmo.main.camunda.listings;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.security.core.GrantedAuthority;
 import ru.ifmo.main.model.RentListing;
-import ru.ifmo.main.security.JwtService;
 import ru.ifmo.main.service.ListingsService;
 
 import java.util.Optional;

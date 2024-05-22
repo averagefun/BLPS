@@ -1,4 +1,4 @@
-package ru.ifmo.main.camunda;
+package ru.ifmo.main.camunda.listings;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import ru.ifmo.main.exceptions.NoSuchListingsException;
 import ru.ifmo.main.model.User;
 import ru.ifmo.main.model.enums.ConformationType;
-import ru.ifmo.main.service.UsersService;
 import ru.ifmo.main.worker.rent.RentStrategy;
 
 @Component

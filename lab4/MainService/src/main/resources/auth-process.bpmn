@@ -7,7 +7,7 @@
                   xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
                   id="Definitions_1"
                   targetNamespace="http://bpmn.io/schema/bpmn">
-  <bpmn:process id="Process_auth" isExecutable="true" camunda:historyTimeToLive="180">
+  <bpmn:process id="Authentication" isExecutable="true" camunda:historyTimeToLive="180">
     <bpmn:startEvent id="StartEvent_1" name="Start">
       <bpmn:extensionElements>
         <camunda:formData>
@@ -20,7 +20,7 @@
 
     <bpmn:sequenceFlow id="SequenceFlow_1" sourceRef="StartEvent_1" targetRef="ServiceTask_1"/>
 
-    <bpmn:serviceTask id="ServiceTask_1" name="Authenticate User" camunda:class="ru.ifmo.main.camunda.AuthDelegate">
+    <bpmn:serviceTask id="ServiceTask_1" name="Authenticate User" camunda:class="ru.ifmo.main.camunda.users.AuthDelegate">
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="username">${execution.getVariable("username")}</camunda:inputParameter>

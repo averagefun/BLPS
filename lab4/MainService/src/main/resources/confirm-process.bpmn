@@ -7,7 +7,7 @@
                   xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
                   id="Definitions_1"
                   targetNamespace="http://bpmn.io/schema/bpmn">
-    <bpmn:process id="confirmRentListingProcess" isExecutable="true" camunda:historyTimeToLive="180">
+    <bpmn:process id="Conformation" isExecutable="true" camunda:historyTimeToLive="180">
         <bpmn:startEvent id="StartEvent_1">
             <bpmn:extensionElements>
                 <camunda:formData>
@@ -26,7 +26,7 @@
             <bpmn:outgoing>Flow_1</bpmn:outgoing>
         </bpmn:startEvent>
         <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="AuthenticateUserTask"/>
-        <bpmn:serviceTask id="AuthenticateUserTask" name="Authenticate User" camunda:class="ru.ifmo.main.camunda.AuthenticateUserDelegate">
+        <bpmn:serviceTask id="AuthenticateUserTask" name="Authenticate User" camunda:class="ru.ifmo.main.camunda.users.AuthenticateUserDelegate">
             <bpmn:extensionElements>
                 <camunda:inputOutput>
                     <camunda:inputParameter name="token">${token}</camunda:inputParameter>
@@ -36,7 +36,7 @@
             <bpmn:outgoing>Flow_2</bpmn:outgoing>
         </bpmn:serviceTask>
         <bpmn:sequenceFlow id="Flow_2" sourceRef="AuthenticateUserTask" targetRef="ConfirmListingTask"/>
-        <bpmn:serviceTask id="ConfirmListingTask" name="Confirm Listing" camunda:class="ru.ifmo.main.camunda.ConfirmRentListingDelegate">
+        <bpmn:serviceTask id="ConfirmListingTask" name="Confirm Listing" camunda:class="ru.ifmo.main.camunda.listings.ConfirmRentListingDelegate">
             <bpmn:extensionElements>
                 <camunda:inputOutput>
                     <camunda:inputParameter name="conformationType">${conformationType}</camunda:inputParameter>

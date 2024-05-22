@@ -1,18 +1,23 @@
-package ru.ifmo.main.camunda;
+package ru.ifmo.main.camunda.users;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.openapitools.model.AuthRequest;
 import org.openapitools.model.AuthResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import ru.ifmo.main.exceptions.UserAlreadyExistsException;
 import ru.ifmo.main.service.AuthService;
 
-@Component("authDelegate")
-public class AuthDelegate implements JavaDelegate {
+import java.security.InvalidParameterException;
+
+@Component
+public class RegisterUserDelegate implements JavaDelegate {
 
     private final AuthService authService;
 
-    public AuthDelegate(AuthService authService) {
+    @Autowired
+    public RegisterUserDelegate(AuthService authService) {
         this.authService = authService;
     }
 
@@ -26,12 +31,15 @@ public class AuthDelegate implements JavaDelegate {
         authRequest.setPassword(password);
 
         try {
-            AuthResponse authResponse = authService.authenticate(authRequest);
-            execution.setVariable("isAuthenticated", true);
+            AuthResponse authResponse = authService.register(authRequest);
             execution.setVariable("token", authResponse.getToken());
-        } catch (Exception e) {
-            execution.setVariable("isAuthenticated", false);
-            execution.setVariable("errorMessage", e.getMessage());
+            execution.setVariable("isRegistered", true);
+        } catch (UserAlreadyExistsException e) {
+            execution.setVariable("isRegistered", false);
+            execution.setVariable("errorMessage", "User already exists");
+        } catch (InvalidParameterException e) {
+            execution.setVariable("isRegistered", false);
+            execution.setVariable("errorMessage", "Invalid username");
         }
     }
 }

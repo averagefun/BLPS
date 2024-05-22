@@ -1,22 +1,21 @@
-package ru.ifmo.main.camunda;
+package ru.ifmo.main.camunda.listings;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import ru.ifmo.main.model.RentListing;
 import ru.ifmo.main.model.User;
-import ru.ifmo.main.worker.rent.RentStrategy;
+import ru.ifmo.main.service.ListingsService;
 
-@Component("rentStrategyDelegate")
-public class RentStrategyDelegate implements JavaDelegate {
+@Component("listingsServiceDelegate")
+public class ListingsServiceDelegate implements JavaDelegate {
 
-    private final RentStrategy rentStrategy;
+    private final ListingsService listingsService;
 
-    public RentStrategyDelegate(RentStrategy rentStrategy) {
-        this.rentStrategy = rentStrategy;
+    public ListingsServiceDelegate(ListingsService listingsService) {
+        this.listingsService = listingsService;
     }
 
     @Override
@@ -25,10 +24,7 @@ public class RentStrategyDelegate implements JavaDelegate {
 
         RentListing listing = (RentListing) execution.getVariable("rentListing");
         User user = (User) execution.getVariable("authorizedUser");
-        rentStrategy.addListing(listing, user);
-        String response = listing.toString(user);
-        execution.setVariable("rentListingResponse", response);
-        execution.setVariable("notification", "Listing added successfully!");
+        listingsService.sendListingToVerification(listing, user);
     }
 
     private void checkAuthentication() {

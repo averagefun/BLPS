@@ -1,4 +1,4 @@
-package ru.ifmo.main.camunda;
+package ru.ifmo.main.camunda.listings;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;

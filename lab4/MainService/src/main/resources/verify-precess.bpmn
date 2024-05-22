@@ -7,7 +7,7 @@
                   xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
                   id="Definitions_1"
                   targetNamespace="http://bpmn.io/schema/bpmn">
-    <bpmn:process id="Process_verifyRentListing" isExecutable="true" camunda:historyTimeToLive="180">
+    <bpmn:process id="Verification" isExecutable="true" camunda:historyTimeToLive="180">
         <bpmn:startEvent id="StartEvent_1" name="Start Verification">
             <bpmn:extensionElements>
                 <camunda:formData>
