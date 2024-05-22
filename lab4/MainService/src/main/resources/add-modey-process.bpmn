@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                  xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+                  id="Definitions_1"
+                  targetNamespace="http://bpmn.io/schema/bpmn">
+    <bpmn:process id="addBalanceProcess" isExecutable="true" camunda:historyTimeToLive="180">
+        <bpmn:startEvent id="StartEvent_1" name="Start">
+            <bpmn:extensionElements>
+                <camunda:formData>
+                    <camunda:formField id="token" label="Token" type="string" />
+                    <camunda:formField id="userId" label="User ID" type="long" />
+                    <camunda:formField id="money" label="Money" type="long" />
+                </camunda:formData>
+            </bpmn:extensionElements>
+            <bpmn:outgoing>Flow_1</bpmn:outgoing>
+        </bpmn:startEvent>
+
+        <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Task_AuthenticateUser"/>
+
+        <bpmn:serviceTask id="Task_AuthenticateUser" name="Authenticate User" camunda:class="ru.ifmo.main.camunda.AuthenticateUserDelegate">
+            <bpmn:incoming>Flow_1</bpmn:incoming>
+            <bpmn:outgoing>Flow_2</bpmn:outgoing>
+        </bpmn:serviceTask>
+
+        <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_AuthenticateUser" targetRef="Task_AddBalance"/>
+
+        <bpmn:serviceTask id="Task_AddBalance" name="Add Balance" camunda:class="ru.ifmo.main.camunda.addMoney.AddBalanceDelegate">
+            <bpmn:incoming>Flow_2</bpmn:incoming>
+            <bpmn:outgoing>Flow_3</bpmn:outgoing>
+        </bpmn:serviceTask>
+
+        <bpmn:sequenceFlow id="Flow_3" sourceRef="Task_AddBalance" targetRef="Task_ShowMessage"/>
+
+        <bpmn:userTask id="Task_ShowMessage" name="Show Message">
+            <bpmn:extensionElements>
+                <camunda:formData>
+                    <camunda:formField id="message" label="Message" type="string" defaultValue="Balance added successfully!" />
+                </camunda:formData>
+            </bpmn:extensionElements>
+            <bpmn:incoming>Flow_3</bpmn:incoming>
+            <bpmn:outgoing>Flow_4</bpmn:outgoing>
+        </bpmn:userTask>
+
+        <bpmn:endEvent id="EndEvent_1" name="End">
+            <bpmn:incoming>Flow_4</bpmn:incoming>
+        </bpmn:endEvent>
+        <bpmn:sequenceFlow id="Flow_4" sourceRef="Task_ShowMessage" targetRef="EndEvent_1"/>
+
+    </bpmn:process>
+
+    <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+        <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="addBalanceProcess">
+            <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
+                <dc:Bounds x="100" y="100" width="36" height="36"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+                <di:waypoint x="136" y="118"/>
+                <di:waypoint x="188" y="118"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="Task_AuthenticateUser_di" bpmnElement="Task_AuthenticateUser">
+                <dc:Bounds x="188" y="78" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+                <di:waypoint x="288" y="118"/>
+                <di:waypoint x="388" y="118"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="Task_AddBalance_di" bpmnElement="Task_AddBalance">
+                <dc:Bounds x="388" y="78" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+                <di:waypoint x="488" y="118"/>
+                <di:waypoint x="540" y="118"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="Task_ShowMessage_di" bpmnElement="Task_ShowMessage">
+                <dc:Bounds x="540" y="78" width="100" height="80"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+                <di:waypoint x="640" y="118"/>
+                <di:waypoint x="690" y="118"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNShape id="EndEvent_1_di" bpmnElement="EndEvent_1">
+                <dc:Bounds x="690" y="100" width="36" height="36"/>
+            </bpmndi:BPMNShape>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</bpmn:definitions>
